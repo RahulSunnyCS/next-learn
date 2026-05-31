@@ -1,0 +1,8 @@
+{
+  "id": 16,
+  "slug": "c15-cart-state",
+  "title": "Cart State — Persisted, Hydration-Safe, Reconciled on Login",
+  "tier": 3,
+  "topics": ["cart", "Zustand", "Context", "persistence", "hydration", "optimistic"],
+  "status": "not-started"
+}

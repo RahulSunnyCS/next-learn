@@ -1,0 +1,8 @@
+{
+  "id": 19,
+  "slug": "c18-optimistic-ui",
+  "title": "Optimistic UI: Instant Updates with Graceful Rollback",
+  "tier": 3,
+  "topics": ["useOptimistic", "optimistic UI", "rollback", "reconciliation", "Server Actions"],
+  "status": "not-started"
+}

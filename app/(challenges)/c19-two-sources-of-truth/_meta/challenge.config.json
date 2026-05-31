@@ -1,0 +1,14 @@
+{
+  "id": 20,
+  "slug": "c19-two-sources-of-truth",
+  "title": "Two Sources of Truth + Cross-Tab Sync",
+  "tier": 3,
+  "topics": [
+    "two sources of truth",
+    "TanStack vs RSC cache",
+    "cross-tab sync",
+    "BroadcastChannel",
+    "reconciliation"
+  ],
+  "status": "not-started"
+}

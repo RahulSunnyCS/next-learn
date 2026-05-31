@@ -1,0 +1,8 @@
+{
+  "id": 15,
+  "slug": "c14-tanstack-query",
+  "title": "TanStack Query: Client Data Management",
+  "tier": 3,
+  "topics": ["TanStack Query", "useQuery", "useInfiniteQuery", "hydration", "client cache"],
+  "status": "not-started"
+}

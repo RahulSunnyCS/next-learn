@@ -1,0 +1,8 @@
+{
+  "id": 18,
+  "slug": "c17-form-state-machine",
+  "title": "Client Form State-Machine: useReducer, Cross-Field Validation, and Server Errors",
+  "tier": 3,
+  "topics": ["form state", "useReducer", "state machine", "cross-field validation", "dirty tracking", "server errors"],
+  "status": "not-started"
+}
