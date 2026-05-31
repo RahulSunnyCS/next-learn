@@ -1,0 +1,14 @@
+{
+  "id": 10,
+  "slug": "c09-legacy-caches",
+  "title": "Legacy Four-Cache Model + Migration to Cache Components",
+  "tier": 2,
+  "topics": [
+    "four caches",
+    "unstable_cache",
+    "fetch cache",
+    "migration",
+    "legacy"
+  ],
+  "status": "not-started"
+}

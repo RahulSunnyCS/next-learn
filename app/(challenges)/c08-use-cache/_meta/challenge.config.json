@@ -1,0 +1,8 @@
+{
+  "id": 9,
+  "slug": "c08-use-cache",
+  "title": "Current Caching Model: 'use cache'",
+  "tier": 2,
+  "topics": ["use cache", "cacheTag", "cacheLife", "caching", "Cache Components"],
+  "status": "not-started"
+}
