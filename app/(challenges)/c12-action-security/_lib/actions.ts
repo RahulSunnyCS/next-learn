@@ -18,7 +18,6 @@
 // function.
 
 import { getSession } from "@/lib/auth";
-import { listReviews } from "@/lib/data";
 import { editReviewSchema } from "./schema";
 
 // ── In-memory rate limiter (concept demo) ─────────────────────────────────────
@@ -137,24 +136,13 @@ export async function editReview(
   // The ownership check uses session.user.id (server-verified) not any
   // caller-supplied userId (which would be bypassable).
   //
-  // We use listReviews and filter by ID because the repository does not expose
-  // a getReviewById().  In a real app with a DB you would do a SELECT by PK.
+  // The frozen lib/data interface does not expose getReviewById(), so we
+  // import the store directly.  This is acceptable within this monorepo.
+  // In a real app: const review = await db.reviews.findUnique({ where: { id: validatedId } })
   //
   // Note: we do NOT leak whether the review exists at all in the error message.
   // Both "not found" and "wrong owner" return "Forbidden" to prevent attackers
   // from using the action as an oracle to enumerate valid review IDs.
-  const allReviews = await listReviews(""); // fetches all — filter below
-  // listReviews filters by productId; to find a specific review by ID we need
-  // to list all and find.  We work around the missing getReviewById() API.
-  // In a real app: const review = await db.reviews.findUnique({ where: { id: validatedId } })
-
-  // Because listReviews filters by productId (empty string matches none),
-  // we use the data module's store via a different approach: we try every product.
-  // For this teaching exercise we directly import the review store.
-  // FROZEN lib/data interface does not expose getReviewById, so we use a
-  // workaround that reads from the in-memory store via a known product.
-  // We import the store directly here — acceptable because this is a challenge
-  // in the same monorepo, not a public consumer of lib/data.
   const { reviewStore } = await import("@/lib/data/store");
   const review = reviewStore.get(validatedId);
 
