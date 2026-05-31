@@ -39,6 +39,7 @@
 import { Suspense } from "react";
 import { cache } from "react"; // per-request dedup, NOT cross-request persistence
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { getProductById, listProducts } from "@/lib/data";
 import type { Product } from "@/lib/data";
 import {
@@ -149,7 +150,7 @@ export default async function C08UseCachePage() {
           receives the memoised result. Reload the page and both panels update
           (memo is discarded between requests). Compare to{" "}
           <code className="font-mono bg-gray-100 rounded px-1">&apos;use cache&apos;</code>:
-          a 'use cache' function would have returned the same result on reload too,
+          a &apos;use cache&apos; function would have returned the same result on reload too,
           until its TTL or revalidateTag() expired the entry.
         </p>
       </section>
@@ -248,9 +249,9 @@ function FileLevelPanel({ categories }: { categories: { id: string; name: string
         )}
       </div>
       <div className="rounded-md bg-white border border-violet-100 p-2 text-xs font-mono text-gray-600">
-        <p className="text-gray-400 mb-1">// _lib/cached.ts line 1</p>
+        <p className="text-gray-400 mb-1">{"// _lib/cached.ts line 1"}</p>
         <p className="text-violet-700">&apos;use cache&apos;;</p>
-        <p className="text-gray-400 mt-1">// all exports cached</p>
+        <p className="text-gray-400 mt-1">{"// all exports cached"}</p>
       </div>
     </div>
   );
@@ -285,7 +286,7 @@ function FunctionLevelPanel({ product }: { product: { id: string; name: string; 
         <p className="text-xs text-gray-500 italic">Product not found</p>
       )}
       <div className="rounded-md bg-white border border-blue-100 p-2 text-xs font-mono text-gray-600">
-        <p className="text-gray-400 mb-1">// inside function body</p>
+        <p className="text-gray-400 mb-1">{"// inside function body"}</p>
         <p className="text-blue-700">&apos;use cache&apos;;</p>
         <p>cacheTag(tags.product(id));</p>
         <p>cacheLife(&apos;hours&apos;);</p>
@@ -307,6 +308,10 @@ async function ReactCacheDemoA({
 }: {
   fetcher: (id: string) => Promise<Product | null>;
 }) {
+  // connection() establishes the dynamic context before any lib/data call.
+  // React.cache() does NOT add 'use cache' semantics — it's per-request dedup,
+  // not a cached boundary, so Math.random() in lib/data is still non-deterministic.
+  await connection();
   const product = await fetcher("p-elec-003");
   return (
     <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 space-y-2">
@@ -329,6 +334,10 @@ async function ReactCacheDemoB({
 }: {
   fetcher: (id: string) => Promise<Product | null>;
 }) {
+  // connection() is required here too — same reason as ReactCacheDemoA above.
+  // Even if caller A's connection() already fired, each dynamic component needs
+  // its own connection() to satisfy the cacheComponents constraint.
+  await connection();
   // Same call — same arg — function body runs only once this render.
   // Caller A already executed it; this call receives the memoised result.
   const product = await fetcher("p-elec-003");
@@ -382,9 +391,12 @@ function CachedDataPanel({ product }: { product: { id: string; name: string; pri
 // This component has NO 'use cache'. It calls lib/data directly → uncached,
 // non-deterministic (Math.random latency). MUST be inside <Suspense>.
 async function UncachedDataPanel({ productId }: { productId: string }) {
+  // connection() establishes the dynamic context before the uncached lib/data call.
+  // listProducts() uses Math.random() for latency simulation — non-deterministic.
   // UNCACHED read — runs on every request, no cache hit possible.
   // If placed OUTSIDE a <Suspense> at the page top-level, the build would
   // fail: "Uncached data was accessed outside of <Suspense>".
+  await connection();
   const product = await listProducts({ pageSize: 1 });
   const item = product.items[0];
   return (
@@ -491,11 +503,11 @@ function CacheTagAndLifePanel() {
           regardless of their TTL. Supports multiple tags in one call.
         </p>
         <div className="rounded-lg bg-gray-50 border border-gray-100 p-3 text-xs font-mono space-y-1 text-gray-700">
-          <p className="text-gray-400">// single tag</p>
+          <p className="text-gray-400">{"// single tag"}</p>
           <p>cacheTag(tags.product(slug));</p>
-          <p className="text-gray-400 mt-2">// multiple tags — both invalidate this entry</p>
+          <p className="text-gray-400 mt-2">{"// multiple tags — both invalidate this entry"}</p>
           <p>cacheTag(tags.product(slug), tags.products);</p>
-          <p className="text-gray-400 mt-2">// invalidation (in a Server Action):</p>
+          <p className="text-gray-400 mt-2">{"// invalidation (in a Server Action):"}</p>
           <p>revalidateTag(tags.product(slug));</p>
         </div>
         <p className="text-xs text-gray-500">
@@ -543,7 +555,7 @@ function CacheTagAndLifePanel() {
           </table>
         </div>
         <div className="rounded-lg bg-gray-50 border border-gray-100 p-3 text-xs font-mono space-y-1 text-gray-700">
-          <p className="text-gray-400">// Custom profile — defined in next.config.ts:</p>
+          <p className="text-gray-400">{"// Custom profile — defined in next.config.ts:"}</p>
           <p className="text-gray-500">{"// experimental: {"}</p>
           <p className="text-gray-500 pl-4">{"//   cacheLife: {"}</p>
           <p className="text-gray-500 pl-8">{"//   'product-detail': {"}</p>

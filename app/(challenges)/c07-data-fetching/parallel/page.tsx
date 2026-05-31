@@ -12,6 +12,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { connection } from "next/server";
 import { getProductRaw, listCategoriesRaw, listReviewsMemo } from "../_lib/queries";
 
 export const metadata: Metadata = {
@@ -138,6 +139,13 @@ const reviews    = await reviewsPromise;`}
 // is fair. The only difference is Promise.all vs sequential await.
 
 async function ParallelData() {
+  // connection() signals to Next.js that this component reads dynamic data
+  // (request-time). This must come before Date.now() — under cacheComponents,
+  // calling Date.now() before any dynamic data access is disallowed during
+  // prerender (it would make the static shell non-deterministic). Calling
+  // connection() first establishes the dynamic context.
+  await connection();
+  // eslint-disable-next-line react-hooks/purity -- intentional: async Server Component timing demo
   const startMs = Date.now();
 
   // ── PARALLEL: all three start at the same moment ──────────────────────────
@@ -147,6 +155,7 @@ async function ParallelData() {
     listReviewsMemo("p-elec-001"),    // starts at t=0 (same moment)
   ]);
 
+  // eslint-disable-next-line react-hooks/purity -- intentional: timing measurement
   const totalMs = Date.now() - startMs;
 
   return (

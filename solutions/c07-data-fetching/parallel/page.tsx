@@ -7,6 +7,7 @@
 
 import { Suspense } from "react";
 import Link from "next/link";
+import { connection } from "next/server";
 import { getProductRaw, listCategoriesRaw, listReviewsMemo } from "../../../app/(challenges)/c07-data-fetching/_lib/queries";
 
 export default function ParallelPageShell() {
@@ -48,6 +49,10 @@ export default function ParallelPageShell() {
 // ─── PARALLEL — the fix ───────────────────────────────────────────────────────
 
 async function ParallelData() {
+  // connection() must precede Date.now() under cacheComponents:true.
+  // It signals dynamic intent so the framework allows reading the current time.
+  await connection();
+  // eslint-disable-next-line react-hooks/purity -- intentional: async Server Component timing demo
   const startMs = Date.now();
 
   // ✅ Parallel: all three start at t=0, page waits for the slowest.
@@ -57,6 +62,7 @@ async function ParallelData() {
     listReviewsMemo("p-elec-001"),
   ]);
 
+  // eslint-disable-next-line react-hooks/purity -- intentional: timing measurement
   const totalMs = Date.now() - startMs;
 
   return (

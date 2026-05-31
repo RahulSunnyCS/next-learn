@@ -38,8 +38,10 @@
     - DISCOVERY (cacheComponents): (a) `export const dynamic` is DISALLOWED; (b) uncached/dynamic data (cookies/searchParams/uncached reads) MUST be inside <Suspense> (static shell + streamed hole). Wrote docs/cache-components-rules.md; c01-auth/page.tsx is the canonical example. These rules go into EVERY challenge brief.
   - [x] Batch 1 (Tier1): T-03..T-08 — DONE & GREEN. 6 challenges built in parallel + 1 fix cycle. Route table verified: ○ static (c04,c05,c06,lab), ◐ Partial Prerender (c03/[slug], c04/account, c05 intercepting+products, c06/[slug]), ƒ dynamic (og image, sitemap). Lint clean; 55 tests pass.
     - More cacheComponents rules learned & documented: dynamicParams/revalidate/fetchCache exports also banned; Math.random() in lib/data latency forces 'use cache' or <Suspense>; next/dynamic ssr:false needs a client wrapper. (docs/cache-components-rules.md updated.)
-  - [~] Batch 2 (Tier2 — caching+actions core): T-09..T-15 (parallel) — RUNNING
-  - [ ] Batch 3 (Tier3): T-16..T-20 (parallel) → T-21
+  - [x] Batch 2 (Tier2 — caching+actions core): T-09..T-15 — DONE & GREEN. 7 challenges + 1 fix cycle. Routes: ◐ c07/c08/c10/c12/c13, ○ c09/c11/c10-draft, ƒ edge-geo/search route handlers + Proxy(Middleware). Lint clean; 55 tests pass.
+    - c12-action-security: 5-layer hardened action (authn→rate-limit→zod→IDOR ownership→write); insecure toy doesn't write. Looks genuinely secure (Phase-4 audit will confirm).
+    - More learnings: proxy.ts must export `proxy` (not `middleware`); `export const runtime` ALSO incompatible w/ cacheComponents (edge selection = deploy-level); need `await connection()` before Math.random()/Date.now() even inside Suspense. (rules doc updated.)
+  - [~] Batch 3 (Tier3 — state mgmt, the ≥5 ask): T-16..T-20 (parallel) → T-21 — RUNNING
   - [ ] Batch 4 (Tier4/5): T-22,T-23,T-25,T-26 (parallel)
   - [ ] Batch 5: T-24 capstone (alone, last)
 

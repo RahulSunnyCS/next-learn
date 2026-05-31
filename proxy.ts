@@ -141,13 +141,15 @@ function negotiateLocale(
 // ─── Main middleware function ─────────────────────────────────────────────
 
 /**
- * Next.js middleware entry point. Runs before route matching on every
+ * Next.js proxy entry point. Runs before route matching on every
  * request that matches config.matcher (defined below).
  *
- * This function is exported as `middleware` — the name Next.js 16 expects.
- * The file itself is `proxy.ts` (the v16 canonical name).
+ * In Next.js 16 the canonical export name changed from `middleware` to
+ * `proxy`. The file is `proxy.ts` and the function is named `proxy`.
+ * Using `middleware` (the old name) causes the build error:
+ *   "Proxy is missing expected function export name"
  */
-export function middleware(req: NextRequest): NextResponse {
+export function proxy(req: NextRequest): NextResponse {
   const { pathname } = req.nextUrl;
 
   // ── 1. AUTH GATE ────────────────────────────────────────────────────────

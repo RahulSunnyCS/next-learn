@@ -23,6 +23,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { connection } from "next/server";
 import { getProductRaw, listCategoriesRaw, listReviewsMemo } from "../_lib/queries";
 
 export const metadata: Metadata = {
@@ -119,6 +120,13 @@ const reviews    = await listReviewsMemo(id);  // wait even more...
 // deduplicate and obscure the timing lesson.
 
 async function WaterfallData() {
+  // connection() signals to Next.js that this component reads dynamic data
+  // (request-time). This must come before Date.now() — under cacheComponents,
+  // calling Date.now() before any dynamic data access is disallowed during
+  // prerender (it would make the static shell non-deterministic). Calling
+  // connection() first establishes the dynamic context.
+  await connection();
+  // eslint-disable-next-line react-hooks/purity -- intentional: async Server Component timing demo
   const startMs = Date.now();
 
   // ── WATERFALL: each await is sequential ───────────────────────────────────
@@ -131,6 +139,7 @@ async function WaterfallData() {
   // Step 3: reviews. Starts ONLY after categories are done.
   const reviews = await listReviewsMemo("p-elec-001");
 
+  // eslint-disable-next-line react-hooks/purity -- intentional: timing measurement
   const totalMs = Date.now() - startMs;
 
   return (

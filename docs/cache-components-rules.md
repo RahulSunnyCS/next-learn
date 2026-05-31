@@ -64,6 +64,11 @@ app-wide. Every challenge page MUST follow these rules or `next build` fails.
    in a `'use cache'` function (for cached/static content) or call it inside a
    `<Suspense>`-wrapped dynamic component (for fresh content). A bare `'use cache'`
    (no `cacheTag`/`cacheLife`) is enough to satisfy the build.
+   **Ordering matters inside a dynamic hole:** you must `await` a dynamic signal —
+   `await connection()` (from `next/server`), or `cookies()`/`headers()` — BEFORE
+   any synchronous non-deterministic call, because the synchronous code before the
+   first `await` still runs during prerender. Pattern:
+   `async function Hole(){ await connection(); const x = await listProducts(); ... }`.
 
 8. **`next/dynamic` with `ssr: false` must live in a Client Component.** Calling
    `dynamic(() => import(...), { ssr: false })` in a Server Component fails the

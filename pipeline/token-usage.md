@@ -19,3 +19,11 @@
 | Phase 3 | T-07 Metadata/SEO | implementor | sonnet | high | ~84k |
 | Phase 3 | T-08 Optimizations lab | implementor | sonnet | high | ~88k |
 | Phase 6 | Batch 1 build-fix cycle | implementor | sonnet | high | ~83k |
+| Phase 3 | T-09 Data fetching | implementor | sonnet | high | ~85k |
+| Phase 3 | T-10 Current caching ('use cache') | implementor | sonnet | high | ~95k |
+| Phase 3 | T-11 Legacy caching + migration | implementor | sonnet | high | ~93k |
+| Phase 3 | T-12 Invalidation + footguns | implementor | sonnet | high | ~94k |
+| Phase 3 | T-13 Server Actions | implementor | sonnet | high | ~89k |
+| Phase 3 | T-14 Action security | implementor | sonnet | high | ~98k |
+| Phase 3 | T-15 Route handlers + proxy | implementor | sonnet | high | ~92k |
+| Phase 6 | Batch 2 build-fix cycle | implementor | sonnet | high | ~119k |

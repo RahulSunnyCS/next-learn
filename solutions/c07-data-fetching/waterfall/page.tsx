@@ -8,6 +8,7 @@
 
 import { Suspense } from "react";
 import Link from "next/link";
+import { connection } from "next/server";
 import { getProductRaw, listCategoriesRaw, listReviewsMemo } from "../../../app/(challenges)/c07-data-fetching/_lib/queries";
 
 export default function WaterfallPageShell() {
@@ -48,6 +49,10 @@ export default function WaterfallPageShell() {
 // ─── WATERFALL — the anti-pattern ────────────────────────────────────────────
 
 async function WaterfallData() {
+  // connection() must precede Date.now() under cacheComponents:true.
+  // It signals dynamic intent so the framework allows reading the current time.
+  await connection();
+  // eslint-disable-next-line react-hooks/purity -- intentional: async Server Component timing demo
   const startMs = Date.now();
 
   // ❌ Sequential: each awaits blocks the next.
@@ -56,6 +61,7 @@ async function WaterfallData() {
   const categories = await listCategoriesRaw();
   const reviews    = await listReviewsMemo("p-elec-001");
 
+  // eslint-disable-next-line react-hooks/purity -- intentional: timing measurement
   const totalMs = Date.now() - startMs;
 
   return (

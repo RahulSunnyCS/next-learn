@@ -19,7 +19,8 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { preloadProduct, preloadCategories } from "./_lib/preload";
+import { connection } from "next/server";
+import { preloadCategories } from "./_lib/preload";
 import {
   getProductByIdMemo,
   listCategoriesMemo,
@@ -39,17 +40,21 @@ const DEMO_PRODUCT_ID = "p-elec-001";
 const DEMO_PRODUCT_SLUG = "wireless-noise-cancelling-headphones";
 
 // ─── PAGE COMPONENT (static shell) ────────────────────────────────────────
+//
+// Under cacheComponents:true the static shell MUST NOT call any non-deterministic
+// functions (Math.random, Date.now) or uncached data helpers — that includes
+// preload helpers that delegate to lib/data (which simulates latency with
+// Math.random). These calls must happen inside a Suspense-wrapped async
+// component.
+//
+// The preload pattern is demonstrated inside MemoDemo below: the component
+// calls preloadCategories() (a fire-and-forget) before its own awaits,
+// so the category list is in-flight when CategoryListPanel renders later.
+// The parent-before-child principle still holds — just scoped to within the
+// dynamic rendering pass, not the static shell pass.
 
 export default function C07DataFetchingPage() {
-  // PRELOAD PATTERN — kick off fetches BEFORE rendering children.
-  // By calling preloadProduct() and preloadCategories() here, the underlying
-  // promises start running immediately. When the Suspense holes below render
-  // their async children, those children call the same memoised accessors and
-  // receive the already-in-flight promises — saving per-component startup time.
-  //
-  // This is a fire-and-forget call; we do NOT await the result here.
-  preloadProduct(DEMO_PRODUCT_SLUG);
-  preloadCategories();
+  // No connection() or preload calls here — this is the static prerender shell.
 
   return (
     <div className="max-w-3xl mx-auto space-y-10">
@@ -98,27 +103,39 @@ export default function C07DataFetchingPage() {
         <div className="rounded-xl border border-blue-100 bg-blue-50 p-5 space-y-3 text-sm text-blue-900">
           <p className="font-medium">How the preload works on this page:</p>
           <p>
-            At the top of <code className="font-mono text-xs bg-blue-100 rounded px-1">C07DataFetchingPage</code>{" "}
-            (BEFORE any child renders), two calls are made:
+            At the top of <code className="font-mono text-xs bg-blue-100 rounded px-1">MemoDemo</code>{" "}
+            (the first dynamic component to render, BEFORE it awaits its own data),
+            a fire-and-forget call is made:
           </p>
           <pre className="bg-white rounded border border-blue-200 p-3 text-xs overflow-x-auto">
-            {`preloadProduct("${DEMO_PRODUCT_SLUG}");\npreloadCategories();`}
+            {`// Inside MemoDemo — first line, before any await:\npreloadCategories(); // starts the category fetch immediately`}
           </pre>
           <p>
-            These are fire-and-forget. They start the underlying data fetch
-            immediately. When{" "}
-            <code className="font-mono text-xs bg-blue-100 rounded px-1">MemoDemo</code>{" "}
-            and{" "}
-            <code className="font-mono text-xs bg-blue-100 rounded px-1">CategoryList</code>{" "}
-            render inside their <code className="font-mono text-xs bg-blue-100 rounded px-1">&lt;Suspense&gt;</code>{" "}
-            boundaries and call the same memoised accessors, the promises are
-            already in flight — eliminating per-component startup latency.
+            When{" "}
+            <code className="font-mono text-xs bg-blue-100 rounded px-1">CategoryListPanel</code>{" "}
+            later renders inside its own{" "}
+            <code className="font-mono text-xs bg-blue-100 rounded px-1">&lt;Suspense&gt;</code>{" "}
+            boundary and calls{" "}
+            <code className="font-mono text-xs bg-blue-100 rounded px-1">listCategoriesMemo()</code>,
+            the category promise is already in flight — eliminating that
+            component&apos;s startup latency.
+          </p>
+          <p className="text-xs text-blue-700">
+            <strong>Why not in the page shell?</strong>{" "}
+            Under <code className="font-mono bg-blue-100 rounded px-1">cacheComponents:true</code>,
+            the static page shell cannot call lib/data helpers (they use{" "}
+            <code className="font-mono bg-blue-100 rounded px-1">Math.random()</code> for
+            simulated latency — non-deterministic). The preload must fire inside
+            a dynamic component. The parent-before-child principle still holds:
+            the preload fires at the top of <code className="font-mono bg-blue-100 rounded px-1">MemoDemo</code>,
+            before <code className="font-mono bg-blue-100 rounded px-1">CategoryListPanel</code>
+            renders.
           </p>
           <p className="text-xs text-blue-700">
             Mechanism: <code className="font-mono bg-blue-100 rounded px-1">React.cache()</code>{" "}
-            memoises the promise keyed by argument. The parent&apos;s preload call
-            stores the promise; the child retrieves the same promise.
-            No second fetch fires.
+            memoises the promise keyed by argument. The preload call
+            stores the in-flight promise; <code className="font-mono bg-blue-100 rounded px-1">CategoryListPanel</code>{" "}
+            retrieves the same promise. No second fetch fires.
           </p>
         </div>
       </section>
@@ -235,6 +252,20 @@ function CacheConceptExplainer() {
 // underlyingFetchCount is readable after all three resolve.
 
 async function MemoDemo({ productId }: { productId: string }) {
+  // Establish the dynamic context first. Under cacheComponents:true, any call
+  // that triggers Math.random() (including all lib/data helpers, which use it
+  // for simulated latency) must happen AFTER an await of a dynamic signal.
+  // connection() is the canonical dynamic signal for components that don't
+  // need cookies/headers but still read non-deterministic data.
+  await connection();
+
+  // PRELOAD PATTERN: fire-and-forget category fetch BEFORE our own awaits.
+  // Now that connection() has established the dynamic context, preloadCategories()
+  // can safely call lib/data (Math.random latency). By the time CategoryListPanel
+  // renders and calls listCategoriesMemo(), the promise is already in flight.
+  // The parent-before-child principle holds — MemoDemo IS the parent here.
+  preloadCategories();
+
   // Reset the counter before this render context so we get a clean reading.
   // NOTE: In a parallel-Suspense scenario you cannot reliably reset across
   // boundaries; this demo places all three calls in one component for clarity.
@@ -267,7 +298,7 @@ async function MemoDemo({ productId }: { productId: string }) {
       </div>
 
       <div className="rounded-md bg-gray-50 border border-gray-100 p-4 font-mono text-xs space-y-1">
-        <p className="text-gray-500">// All three calls return the same product:</p>
+        <p className="text-gray-500">{"// All three calls return the same product:"}</p>
         <p className="text-gray-800">
           product1.id = <span className="text-indigo-600">&quot;{product1?.id ?? "null"}&quot;</span>
         </p>
@@ -277,7 +308,7 @@ async function MemoDemo({ productId }: { productId: string }) {
         <p className="text-gray-800">
           product3.id = <span className="text-indigo-600">&quot;{product3?.id ?? "null"}&quot;</span>
         </p>
-        <p className="text-gray-500 mt-2">// Same object reference?</p>
+        <p className="text-gray-500 mt-2">{"// Same object reference?"}</p>
         <p className="text-gray-800">
           product1 === product2 === product3 →{" "}
           <span className={isSameRef ? "text-green-600" : "text-red-600"}>
@@ -317,9 +348,12 @@ async function MemoDemo({ productId }: { productId: string }) {
 // ─── DYNAMIC HOLE: category list (preload demo) ───────────────────────────────
 
 async function CategoryListPanel() {
-  // listCategoriesMemo is the SAME memoised accessor called by preloadCategories()
-  // above. Because preloadCategories() ran before this component rendered, the
-  // promise is already in-flight (or settled). This call just awaits it.
+  // connection() establishes the dynamic context before any lib/data call.
+  // Required under cacheComponents:true because listCategoriesMemo() triggers
+  // Math.random() (simulated latency in lib/data). If MemoDemo already ran
+  // preloadCategories(), this call returns the memoised in-flight promise
+  // (no second fetch fires — React cache() deduplicates it).
+  await connection();
   const categories = await listCategoriesMemo();
 
   return (

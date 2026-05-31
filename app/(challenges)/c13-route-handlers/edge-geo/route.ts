@@ -1,15 +1,40 @@
 // ─── app/(challenges)/c13-route-handlers/edge-geo/route.ts ───────────────
 //
-// C13 — Edge-runtime Route Handler demonstrating the restricted API surface.
+// C13 — Edge-style Route Handler demonstrating the restricted Web-API surface.
 //
-// RUNTIME DECLARATION:
-//   export const runtime = 'edge' tells Next.js to run this handler in the
-//   Edge runtime instead of the default Node.js runtime.
-//   This is the ONLY per-route config export allowed under cacheComponents:true —
-//   it selects the runtime, it is NOT a dynamic-control directive.
-
-export const runtime = "edge";
-
+// ── v16 GOTCHA: `export const runtime` IS INCOMPATIBLE WITH cacheComponents ─
+//
+//   In Next.js 16 with `cacheComponents: true` (Cache Components / PPR mode),
+//   the per-route `export const runtime = 'edge'` config export is FORBIDDEN.
+//   The build fails with:
+//     "Route segment config 'runtime' is not compatible with nextConfig.cacheComponents"
+//
+//   Why? Cache Components enforces a unified static-shell + streaming-dynamic
+//   model over the whole app. Per-route runtime overrides conflict with the
+//   framework's ability to prerender and stream route shells consistently.
+//
+// ── REAL-WORLD IMPLICATION ────────────────────────────────────────────────
+//
+//   Under cacheComponents: true, runtime selection is a DEPLOYMENT-LEVEL
+//   concern, not a per-route code concern. You tell your hosting platform
+//   (Vercel, Cloudflare, AWS) which routes should run at Edge via their own
+//   config (e.g. Vercel's vercel.json `functions` key or framework preset),
+//   NOT via `export const runtime` in route files.
+//
+//   This is a deliberate v16 architectural decision: the app code stays
+//   portable and runtime-agnostic; deployment targets are configured
+//   outside the app.
+//
+// ── WHAT THIS HANDLER TEACHES ─────────────────────────────────────────────
+//
+//   This handler runs on the DEFAULT Node.js runtime but demonstrates the
+//   Edge-compatible coding patterns — using only Web APIs that work on both
+//   Node and Edge runtimes. The handler would work unchanged if deployed to
+//   an Edge runtime via the deployment platform config.
+//
+//   See the deployment challenge for how to configure Edge routes at the
+//   platform level under cacheComponents.
+//
 // ─────────────────────────────────────────────────────────────────────────
 //
 // EDGE RUNTIME — WHAT IS AVAILABLE AND WHAT IS NOT
@@ -134,8 +159,14 @@ interface GeoResponse {
   lon: string | null;
   /** Which platform's headers were detected (for debugging). */
   source: "vercel" | "cloudflare" | "local";
-  /** Runtime confirmation (always "edge" from this handler). */
-  runtime: "edge";
+  /**
+   * Runtime confirmation for demo purposes.
+   * Under cacheComponents:true this handler runs on the default Node.js
+   * runtime, but the code uses only Edge-compatible Web APIs — the value
+   * here documents which coding style was used, not the actual runtime
+   * selected by the deployment platform.
+   */
+  runtime: "edge" | "nodejs";
   /** Demo: Web Crypto is available at Edge — shows a random hex token. */
   demoToken: string;
 }
@@ -229,7 +260,12 @@ export async function GET(request: NextRequest): Promise<Response> {
     lat,
     lon,
     source,
-    runtime: "edge",
+    // Under cacheComponents:true we run on the Node.js runtime.
+    // The code uses only Edge-compatible Web APIs to demonstrate portability.
+    // To actually deploy on Edge, configure the runtime at the platform level
+    // (e.g. vercel.json) — not via `export const runtime` (incompatible with
+    // cacheComponents, see comment at top of file).
+    runtime: "nodejs",
     demoToken,
   };
 
@@ -262,24 +298,31 @@ function safeDecodeURIComponent(str: string): string {
 
 // ─────────────────────────────────────────────────────────────────────────
 //
-// NODE RUNTIME CONTRAST (what this would look like with Node runtime):
+// NODE RUNTIME vs. EDGE RUNTIME (coding comparison):
 //
-// If you removed `export const runtime = 'edge'`, this handler would run
-// in Node.js. The code above works in both runtimes — Web APIs are a
-// subset of what Node provides. But in Node you could ALSO do:
+// This handler currently runs on Node.js (the default runtime under
+// cacheComponents:true — see the top-of-file note about why
+// `export const runtime = 'edge'` is removed).
+//
+// The code above is written using ONLY Web APIs, so it would work unchanged
+// if the deployment platform routes this handler to Edge. This is the v16
+// recommended pattern: write portable Web-API-first code; let the deployment
+// config decide the runtime.
+//
+// If you were writing Node-specific code, you could also use:
 //
 //   import { createHmac, randomBytes } from 'crypto';  // Node crypto module
 //   import { readFileSync } from 'fs';                 // File system access
 //   import { gzip } from 'zlib';                       // Compression streams
 //
-// Key differences in a Node handler:
+// Key coding differences in a Node-only handler (not needed here, shown for contrast):
 //   - crypto.randomBytes(16).toString('hex') instead of getRandomValues()
 //   - Buffer.from(bytes).toString('hex') for byte-to-hex conversion
 //   - Can use any npm package that depends on Node built-ins (e.g. sharp for
 //     image processing, csv-parse, xml2js, etc.)
 //   - Can read local files: readFileSync('./data.json')
 //
-// In practice, most Route Handlers should run on Node unless you specifically
-// need the low-latency global distribution of Edge. The restricted API surface
-// is a real constraint that can break packages silently if they depend on Node
-// built-ins.
+// In practice, most Route Handlers should use the default (Node) runtime.
+// Use Edge only when you specifically need low-latency global distribution
+// for a simple, stateless handler — and configure the runtime at the platform
+// level, not via `export const runtime`.
