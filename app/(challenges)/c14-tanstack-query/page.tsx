@@ -179,6 +179,11 @@ async function PrefetchedProductList() {
     queryFn: ({ pageParam }) =>
       getProductPage(pageParam as number, 6, undefined),
     initialPageParam: 1,
+    // getNextPageParam is required when pages is set (tells prefetch when to stop).
+    // We prefetch only 1 page so this is a no-op for the prefetch, but TypeScript
+    // requires it to match the FetchInfiniteQueryOptions shape.
+    getNextPageParam: (lastPage: ProductPage) =>
+      lastPage.hasNextPage ? lastPage.page + 1 : undefined,
     // Only prefetch the first page — the rest load on demand as the user scrolls.
     pages: 1,
   });

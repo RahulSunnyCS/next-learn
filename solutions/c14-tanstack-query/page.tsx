@@ -72,7 +72,7 @@ import { QueryClient, dehydrate, HydrationBoundary } from "@tanstack/react-query
 // solution share the same Route Handlers and data layer (no duplication).
 import QueryProvider from "../../app/(challenges)/c14-tanstack-query/_components/QueryProvider";
 import InfiniteList from "../../app/(challenges)/c14-tanstack-query/_components/InfiniteList";
-import SearchAsYouType from "./SearchAsYouType";
+import SearchAsYouType from "./_components/SearchAsYouType";
 import { getProductPage } from "../../app/(challenges)/c14-tanstack-query/_lib/search-route";
 
 export const metadata: Metadata = {
