@@ -43,7 +43,7 @@ export async function getProductShellData(slug: string): Promise<Product | null>
   // creation time.
   cacheTag(tags.product(slug));
   cacheLife("hours");
-  return getProductBySlug(slug);
+  return await getProductBySlug(slug);
 }
 
 // ---------------------------------------------------------------------------

@@ -12,8 +12,10 @@ import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 
-// Static image imports — dimensions extracted at build time (zero CLS)
-import heroShoe from "../app/(challenges)/lab-optimizations/_components/assets/hero-shoe.svg";
+// Static image imports — dimensions extracted at build time (zero CLS).
+// Using @/ alias (maps to repo root) so the import resolves correctly
+// regardless of where this solutions file sits relative to app/.
+import heroShoe from "@/app/(challenges)/lab-optimizations/_components/assets/hero-shoe.svg";
 
 export const metadata: Metadata = {
   title: "Solution — Built-in Optimizations",
@@ -24,7 +26,7 @@ export const metadata: Metadata = {
 const HeavyChart = dynamic(
   () =>
     import(
-      "../app/(challenges)/lab-optimizations/_components/HeavyAnalyticsChart"
+      "@/app/(challenges)/lab-optimizations/_components/HeavyAnalyticsChart"
     ),
   {
     ssr: false,
@@ -132,15 +134,17 @@ export default function SolutionPage() {
 
 // Dynamic hole — catalog data via 'use cache' function (inside Suspense)
 async function CatalogData() {
-  // Import the cached helper — safe inside Suspense
+  // Import the cached helper — safe inside Suspense.
+  // Static import (not dynamic) is fine here; the function is async and
+  // the module is server-only, so no client bundle impact.
   const { getFeaturedProducts } = await import(
-    "../app/(challenges)/lab-optimizations/_lib/catalog"
+    "@/app/(challenges)/lab-optimizations/_lib/catalog"
   );
   const products = await getFeaturedProducts();
 
   return (
     <ul className="text-sm space-y-1">
-      {products.map((p) => (
+      {products.map((p: { id: string; name: string; priceCents: number }) => (
         <li key={p.id} className="text-gray-700">
           {p.name} — ${(p.priceCents / 100).toFixed(2)}
         </li>
