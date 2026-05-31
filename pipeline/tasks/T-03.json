@@ -1,0 +1,48 @@
+{
+  "task_id": "T-03",
+  "title": "C02 Catalog SSG + ISR",
+  "assigned_to": "implementor",
+  "risk_flags": [],
+  "scope": {
+    "files_to_create": [
+      "app/(challenges)/c02-catalog-ssg-isr/_meta/spec.md",
+      "app/(challenges)/c02-catalog-ssg-isr/_meta/defend-it.md",
+      "app/(challenges)/c02-catalog-ssg-isr/_meta/verification.md",
+      "app/(challenges)/c02-catalog-ssg-isr/_meta/challenge.config.ts",
+      "app/(challenges)/c02-catalog-ssg-isr/page.tsx",
+      "app/(challenges)/c02-catalog-ssg-isr/[slug]/page.tsx",
+      "app/(challenges)/c02-catalog-ssg-isr/_lib/catalog.ts",
+      "app/(challenges)/c02-catalog-ssg-isr/_components/ProductGrid.tsx",
+      "solutions/c02-catalog-ssg-isr/page.tsx",
+      "solutions/c02-catalog-ssg-isr/[slug]/page.tsx",
+      "solutions/c02-catalog-ssg-isr/cache-flow.md",
+      "solutions/c02-catalog-ssg-isr/NOTES.md"
+    ],
+    "files_to_modify": [],
+    "files_forbidden": [
+      "package.json",
+      "next.config.ts",
+      "tsconfig.json",
+      "tailwind.config.ts",
+      "postcss.config.mjs",
+      "app/layout.tsx",
+      "app/page.tsx",
+      "app/globals.css",
+      "lib/data/**",
+      "lib/auth/**",
+      "lib/registry.ts",
+      "proxy.ts",
+      "all app/(challenges)/* directories not belonging to this task",
+      "solutions/** except solutions/c02-catalog-ssg-isr/**"
+    ]
+  },
+  "acceptance_criteria": [
+    "The product listing and detail routes are statically generated: generateStaticParams enumerates the seeded product slugs and the reference solution serves static HTML for those routes after `next build` (QA: SSG pages are prerendered at build time and served as static HTML).",
+    "A revalidate window is configured so the page demonstrably serves stale-then-fresh content on the documented schedule (QA: ISR revalidation serves stale content and then updates within the declared window).",
+    "The dynamicParams true|false gotcha is demonstrated and documented: a slug that was NOT pre-rendered behaves per the configured dynamicParams setting (renders on-demand vs 404), with the contrast explained in NOTES.md / spec.md.",
+    "The challenge reads product data only through a local _lib helper that wraps the frozen lib/data repository — it does not edit lib/data and does not import another challenge's files.",
+    "The c02 _meta folder contains spec.md (with non-empty acceptance criteria), defend-it.md (3-5 from-memory questions with model answers, including a committed cache-flow note for the ISR caching behaviour), verification.md, and a discoverable challenge.config.ts (QA: every challenge has committed spec + Defend-It)."
+  ],
+  "dependencies": ["T-00", "T-01"],
+  "output_format": "code plus plain English explanation of every non-obvious decision"
+}

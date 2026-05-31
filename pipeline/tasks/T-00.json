@@ -1,0 +1,39 @@
+{
+  "task_id": "T-00",
+  "title": "Scaffold & challenge harness",
+  "assigned_to": "implementor",
+  "risk_flags": [],
+  "scope": {
+    "files_to_create": [
+      "package.json",
+      "next.config.ts",
+      "tsconfig.json",
+      "tailwind.config.ts",
+      "postcss.config.mjs",
+      "app/layout.tsx",
+      "app/page.tsx",
+      "app/globals.css",
+      "lib/registry.ts",
+      "HARNESS.md",
+      "docs/decision-log.md",
+      ".gitignore"
+    ],
+    "files_to_modify": [],
+    "files_forbidden": [
+      "lib/data/**",
+      "lib/auth/**",
+      "proxy.ts",
+      "all app/(challenges)/* directories (created by their own challenge tasks)",
+      "solutions/**"
+    ]
+  },
+  "acceptance_criteria": [
+    "package.json pins Next.js 16 to an exact version (no caret/tilde range) and declares scripts for dev, build, start, lint, and typecheck; React, TypeScript, and Tailwind are present as dependencies.",
+    "next.config.ts is the single canonical config and enables Cache Components (cacheComponents / 'use cache' support) per the LOCKED PROJECT CONFIG; `next build` exits 0 and produces a .next/ directory against the pinned version (QA: Repo builds successfully).",
+    "`tsc --noEmit` exits 0 with zero errors and `npm run lint` exits 0 with zero errors against the scaffold (QA: TypeScript typecheck passes / ESLint passes).",
+    "lib/registry.ts exports a discovery helper that globs app/(challenges)/*/_meta/challenge.config.ts and app/page.tsx renders the auto-discovered challenge index from it — no hand-maintained nav list exists anywhere.",
+    "HARNESS.md documents the per-challenge folder convention (live routes under app/(challenges)/cNN-slug/**, metadata under _meta/ with spec.md + defend-it.md + verification.md + challenge.config.ts, local _components/_lib/_tests, reference solution under solutions/cNN-slug/**) and docs/decision-log.md contains a rendering-strategy decision-log skeleton with at least one filled example row."
+  ],
+  "dependencies": [],
+  "output_format": "code plus plain English explanation of every non-obvious decision"
+}

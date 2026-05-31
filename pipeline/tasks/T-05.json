@@ -1,0 +1,50 @@
+{
+  "task_id": "T-05",
+  "title": "C04 RSC/Client boundary refactor",
+  "assigned_to": "implementor",
+  "risk_flags": [],
+  "scope": {
+    "files_to_create": [
+      "app/(challenges)/c04-rsc-boundary/_meta/spec.md",
+      "app/(challenges)/c04-rsc-boundary/_meta/defend-it.md",
+      "app/(challenges)/c04-rsc-boundary/_meta/verification.md",
+      "app/(challenges)/c04-rsc-boundary/_meta/challenge.config.ts",
+      "app/(challenges)/c04-rsc-boundary/page.tsx",
+      "app/(challenges)/c04-rsc-boundary/account/page.tsx",
+      "app/(challenges)/c04-rsc-boundary/_components/SellerLiveMetrics.tsx",
+      "app/(challenges)/c04-rsc-boundary/_components/InteractiveIsland.tsx",
+      "app/(challenges)/c04-rsc-boundary/_lib/metrics.ts",
+      "app/(challenges)/c04-rsc-boundary/_lib/server-secret.ts",
+      "solutions/c04-rsc-boundary/page.tsx",
+      "solutions/c04-rsc-boundary/account/page.tsx",
+      "solutions/c04-rsc-boundary/bundle-delta.md",
+      "solutions/c04-rsc-boundary/NOTES.md"
+    ],
+    "files_to_modify": [],
+    "files_forbidden": [
+      "package.json",
+      "next.config.ts",
+      "tsconfig.json",
+      "tailwind.config.ts",
+      "postcss.config.mjs",
+      "app/layout.tsx",
+      "app/page.tsx",
+      "app/globals.css",
+      "lib/data/**",
+      "lib/auth/**",
+      "lib/registry.ts",
+      "proxy.ts",
+      "all app/(challenges)/* directories not belonging to this task",
+      "solutions/** except solutions/c04-rsc-boundary/**"
+    ]
+  },
+  "acceptance_criteria": [
+    "The refactor pushes 'use client' down to the smallest interactive island and records the measured client-bundle delta (before vs after) in bundle-delta.md (QA non-blocker: client bundle size delta for the RSC boundary challenge is documented; QA: code-splitting separates client and server chunks).",
+    "All props crossing the server→client boundary are serializable, and the solution demonstrates the Server-Components-as-children composition pattern (a Client Component receiving a Server Component via children rather than importing it).",
+    "_lib/server-secret.ts uses the `server-only` guard and is never reachable from a Client Component, so no secret string appears in any client chunk after build (QA: reference solutions do not expose server-only env vars in the client bundle).",
+    "The seller live-metrics widget is deliberately CSR (its content is absent from initial SSR HTML, appears only after JS), and the account page is SSR-dynamic and imports the frozen lib/auth getSession to read the current user (QA: the deliberate CSR widget is client-rendered and not present in initial SSR HTML).",
+    "The c04 _meta folder contains spec.md (non-empty acceptance criteria), defend-it.md (3-5 from-memory questions with model answers), verification.md, and a discoverable challenge.config.ts; the account page imports auth via the frozen interface only and does not edit lib/auth."
+  ],
+  "dependencies": ["T-00", "T-01", "T-02"],
+  "output_format": "code plus plain English explanation of every non-obvious decision"
+}

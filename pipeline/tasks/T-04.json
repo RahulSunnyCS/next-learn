@@ -1,0 +1,52 @@
+{
+  "task_id": "T-04",
+  "title": "C03 Product detail PPR + Streaming SSR",
+  "assigned_to": "implementor",
+  "risk_flags": [],
+  "scope": {
+    "files_to_create": [
+      "app/(challenges)/c03-product-ppr/_meta/spec.md",
+      "app/(challenges)/c03-product-ppr/_meta/defend-it.md",
+      "app/(challenges)/c03-product-ppr/_meta/verification.md",
+      "app/(challenges)/c03-product-ppr/_meta/challenge.config.ts",
+      "app/(challenges)/c03-product-ppr/[slug]/page.tsx",
+      "app/(challenges)/c03-product-ppr/[slug]/loading.tsx",
+      "app/(challenges)/c03-product-ppr/[slug]/error.tsx",
+      "app/(challenges)/c03-product-ppr/_components/ProductShell.tsx",
+      "app/(challenges)/c03-product-ppr/_components/LiveInventory.tsx",
+      "app/(challenges)/c03-product-ppr/_components/Recommendations.tsx",
+      "app/(challenges)/c03-product-ppr/_components/Reviews.tsx",
+      "app/(challenges)/c03-product-ppr/_lib/product.ts",
+      "solutions/c03-product-ppr/[slug]/page.tsx",
+      "solutions/c03-product-ppr/strategy-table.md",
+      "solutions/c03-product-ppr/cache-flow.md",
+      "solutions/c03-product-ppr/NOTES.md"
+    ],
+    "files_to_modify": [],
+    "files_forbidden": [
+      "package.json",
+      "next.config.ts",
+      "tsconfig.json",
+      "tailwind.config.ts",
+      "postcss.config.mjs",
+      "app/layout.tsx",
+      "app/page.tsx",
+      "app/globals.css",
+      "lib/data/**",
+      "lib/auth/**",
+      "lib/registry.ts",
+      "proxy.ts",
+      "all app/(challenges)/* directories not belonging to this task",
+      "solutions/** except solutions/c03-product-ppr/**"
+    ]
+  },
+  "acceptance_criteria": [
+    "The product detail page renders a static shell (title, image, description) in the initial HTML with no Suspense fallback content in the source, while dynamic holes (live inventory, recommendations, reviews) are absent from initial HTML and stream in (QA: PPR product page renders its static shell without blocking on dynamic holes at first paint).",
+    "The dynamic holes resolve and become visible within an acceptable timeout under local dev after first paint (QA: PPR dynamic holes fill in within an acceptable timeout).",
+    "The solution contrasts loading.tsx (route-level) with manual <Suspense> boundaries and documents the error-after-flush gotcha (an error thrown after the stream has started cannot swap in the route error boundary) in NOTES.md, with a working error.tsx as a Client Component.",
+    "solutions/c03-product-ppr/strategy-table.md contains a name-the-strategy table distinguishing CSR, SSR, SSG, ISR, Streaming SSR, and PPR with when-to-use guidance.",
+    "The c03 _meta folder contains spec.md (non-empty acceptance criteria), defend-it.md (3-5 from-memory questions with model answers) plus the committed cache-flow.md diagram required for cache challenges, verification.md, and a discoverable challenge.config.ts."
+  ],
+  "dependencies": ["T-00", "T-01"],
+  "output_format": "code plus plain English explanation of every non-obvious decision"
+}
