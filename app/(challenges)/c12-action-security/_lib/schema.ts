@@ -29,16 +29,18 @@ export const editReviewSchema = z.object({
 
   // Integer rating 1–5.  The .int() check rejects floats (1.5, 2.9) that
   // would corrupt the product's average rating calculation.
+  // Note: Zod v4 uses { error: "..." } not { invalid_type_error: "..." }.
   rating: z
-    .number({ invalid_type_error: "Rating must be a number" })
+    .number({ error: "Rating must be a number" })
     .int("Rating must be a whole number")
     .min(1, "Rating must be at least 1")
     .max(5, "Rating must be at most 5"),
 
   // Non-empty review body, max 2000 chars.  The 2000-char cap prevents a
   // trivial memory DoS (10MB body × 100 concurrent requests = 1GB of heap).
+  // Note: Zod v4 uses { error: "..." } not { invalid_type_error: "..." }.
   body: z
-    .string({ invalid_type_error: "Body must be a string" })
+    .string({ error: "Body must be a string" })
     .trim()
     .min(1, "Review body must not be empty")
     .max(2000, "Review body must not exceed 2000 characters"),

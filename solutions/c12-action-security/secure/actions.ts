@@ -33,13 +33,14 @@ import { z } from "zod";
 
 const editReviewSchema = z.object({
   reviewId: z.string().min(1, "Review ID is required"),
+  // Zod v4 uses { error: "..." } not { invalid_type_error: "..." }.
   rating: z
-    .number({ invalid_type_error: "Rating must be a number" })
+    .number({ error: "Rating must be a number" })
     .int("Rating must be a whole number")
     .min(1, "Rating must be at least 1")
     .max(5, "Rating must be at most 5"),
   body: z
-    .string({ invalid_type_error: "Body must be a string" })
+    .string({ error: "Body must be a string" })
     .trim()
     .min(1, "Review body must not be empty")
     .max(2000, "Review body must not exceed 2000 characters"),

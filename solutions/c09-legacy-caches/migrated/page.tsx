@@ -189,7 +189,8 @@ async function FeaturedProducts() {
           className="rounded-xl border border-gray-200 bg-white p-4 space-y-1"
         >
           <p className="font-medium text-sm text-gray-900">{product.name}</p>
-          <p className="text-xs text-gray-500">${product.price.toFixed(2)}</p>
+          {/* priceCents is the canonical price field (integer cents, not float dollars) */}
+          <p className="text-xs text-gray-500">${(product.priceCents / 100).toFixed(2)}</p>
         </div>
       ))}
     </div>

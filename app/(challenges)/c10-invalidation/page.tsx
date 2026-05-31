@@ -332,10 +332,12 @@ function AddReviewForm({
   action: (formData: FormData) => Promise<{ error?: string; success?: boolean }>;
   label: string;
 }) {
-  // Cast: React form action is typed as void-returning, but returning a value
-  // from a Server Action is valid at runtime. The return value is simply ignored
-  // by the form element — it only matters if consumed via useActionState().
-  const voidAction = action as (formData: FormData) => Promise<void>;
+  // Cast: React <form> action is typed as void-returning, but a Server Action
+  // that returns a value is valid at runtime — the form ignores the return value.
+  // The double-cast (through unknown) is required by TypeScript strict mode when
+  // the two types don't overlap structurally. The value would only be consumed
+  // if the form were wrapped with useActionState().
+  const voidAction = action as unknown as (formData: FormData) => Promise<void>;
   return (
     <form action={voidAction} className="space-y-2 pt-2 border-t border-gray-200">
       <p className="text-xs font-semibold text-gray-600">{label}</p>

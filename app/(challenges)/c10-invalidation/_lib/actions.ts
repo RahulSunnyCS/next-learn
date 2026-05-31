@@ -43,8 +43,7 @@
 
 import { revalidateTag, revalidatePath } from "next/cache";
 import { draftMode } from "next/headers";
-import { addReview } from "@/lib/data";
-import { tags } from "@/lib/data";
+import { addReview as repoAddReview, tags } from "@/lib/data";
 
 // The product we demo reviews for. Hard-coded to prevent parameter injection
 // from the form — a real app would validate this against an allowlist or DB.
@@ -53,19 +52,19 @@ const DEMO_PRODUCT_ID = "p-elec-001";
 // ─── Input validation helper ─────────────────────────────────────────────────
 
 function validateReviewInput(
-  ratingRaw: FormData["get"],
-  body: string
-): { rating: number; error?: string } {
-  const ratingStr = ratingRaw("rating");
+  formData: FormData
+): { rating: number; body: string; error?: string } {
+  const ratingStr = formData.get("rating");
   const rating = ratingStr ? parseInt(String(ratingStr), 10) : NaN;
+  const body = String(formData.get("body") ?? "").trim();
 
   if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
-    return { rating: NaN, error: "Rating must be an integer between 1 and 5." };
+    return { rating: NaN, body, error: "Rating must be an integer between 1 and 5." };
   }
-  if (!body || body.trim().length === 0) {
-    return { rating, error: "Review body must not be empty." };
+  if (!body) {
+    return { rating, body, error: "Review body must not be empty." };
   }
-  return { rating };
+  return { rating, body };
 }
 
 // ─── 1. Buggy Action — wrong tag (the FOOTGUN) ───────────────────────────────
@@ -84,11 +83,10 @@ function validateReviewInput(
  * THIS IS THE FOOTGUN.
  */
 export async function addReviewBuggy(formData: FormData): Promise<{ error?: string; success?: boolean }> {
-  const body = String(formData.get("body") ?? "").trim();
-  const { rating, error } = validateReviewInput(formData.get.bind(formData), body);
+  const { rating, body, error } = validateReviewInput(formData);
   if (error) return { error };
 
-  await addReview({
+  await repoAddReview({
     productId: DEMO_PRODUCT_ID,
     userId: "u-buyer-1",
     authorName: "Demo User",
@@ -125,11 +123,10 @@ export async function addReviewBuggy(formData: FormData): Promise<{ error?: stri
  * shell itself is also refreshed.
  */
 export async function addReviewFixed(formData: FormData): Promise<{ error?: string; success?: boolean }> {
-  const body = String(formData.get("body") ?? "").trim();
-  const { rating, error } = validateReviewInput(formData.get.bind(formData), body);
+  const { rating, body, error } = validateReviewInput(formData);
   if (error) return { error };
 
-  await addReview({
+  await repoAddReview({
     productId: DEMO_PRODUCT_ID,
     userId: "u-buyer-1",
     authorName: "Demo User",

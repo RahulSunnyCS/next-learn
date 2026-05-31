@@ -133,14 +133,16 @@ async function FeaturedProducts() {
               {product.name}
             </p>
             <span className="inline-flex items-center rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700 ring-1 ring-indigo-200 shrink-0">
-              ${product.price.toFixed(2)}
+              {/* priceCents is the canonical price field (integer cents, not float dollars) */}
+              ${(product.priceCents / 100).toFixed(2)}
             </span>
           </div>
           <p className="text-xs text-gray-500 line-clamp-2">
             {product.description}
           </p>
           <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-400">{product.category}</span>
+            {/* categoryId is the FK field; no denormalised category name on Product */}
+            <span className="text-xs text-gray-400">{product.categoryId}</span>
             <span className="text-xs text-amber-600">
               ★ {product.rating.toFixed(1)}
             </span>
