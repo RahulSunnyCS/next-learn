@@ -150,9 +150,7 @@ async function PrefetchedProductList() {
     initialPageParam: 1,
     // getNextPageParam is required when pages is set.
     getNextPageParam: (lastPage: ProductPage) =>
-      (lastPage as { hasNextPage: boolean; page: number }).hasNextPage
-        ? (lastPage as { page: number }).page + 1
-        : undefined,
+      lastPage.hasNextPage ? lastPage.page + 1 : undefined,
     pages: 1, // only prefetch the first page — rest load on demand
   });
 

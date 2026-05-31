@@ -103,7 +103,7 @@ export async function removeItem(itemId: string): Promise<ActionResult> {
   savedItemsStore.set(DEMO_USER_ID, set);
 
   // Invalidate the server cache tag — same as saveItem.
-  revalidateTag(savedItemsTag(DEMO_USER_ID));
+  revalidateTag(savedItemsTag(DEMO_USER_ID), "seconds");
 
   return { success: true, items: Array.from(set) };
 }
