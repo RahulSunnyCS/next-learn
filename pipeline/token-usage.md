@@ -12,3 +12,10 @@
 | Phase 3 | T-00 Scaffold & harness | implementor | sonnet | high | ~89k |
 | Phase 3 | T-01 Data layer | implementor | sonnet | high | ~63k |
 | Phase 3 | T-02 Auth foundation (C01) | implementor | sonnet | high | ~74k |
+| Phase 3 | T-03 Catalog SSG/ISR | implementor | sonnet | high | ~83k |
+| Phase 3 | T-04 Product PPR | implementor | sonnet | high | ~83k |
+| Phase 3 | T-05 RSC boundary | implementor | sonnet | high | ~83k |
+| Phase 3 | T-06 App Router | implementor | sonnet | high | ~89k |
+| Phase 3 | T-07 Metadata/SEO | implementor | sonnet | high | ~84k |
+| Phase 3 | T-08 Optimizations lab | implementor | sonnet | high | ~88k |
+| Phase 6 | Batch 1 build-fix cycle | implementor | sonnet | high | ~83k |

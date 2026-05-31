@@ -40,20 +40,28 @@ import {
 /**
  * Returns a paginated, optionally-filtered list of products.
  *
- * BROKEN SKELETON — currently NOT cached.  Add 'use cache', cacheTag, and
- * cacheLife to make this function serve stale-then-fresh data (ISR).
+ * CHALLENGE SKELETON — currently missing proper ISR caching.  Your task:
+ *
+ *   1. Replace the existing 'use cache' below with the full ISR setup:
+ *      add cacheTag(tags.products) and cacheLife('hours') after 'use cache'.
+ *
+ * The bare 'use cache' is present only so the build compiles (lib/data uses
+ * Math.random() in its delay, which Next.js 16 rejects during prerender
+ * outside a cache boundary).  Without cacheTag + cacheLife, the data is
+ * cached but NOT ISR-tagged or time-bounded — the challenge is incomplete.
  *
  * @param opts  Same options as lib/data listProducts (categoryId, sort, etc.)
  */
 export async function listCachedProducts(
   opts: ListProductsOptions = {}
 ): Promise<PaginatedResult<Product>> {
-  // TODO (challenge): add the three lines below to enable ISR caching:
-  //   'use cache';
+  // STARTER: bare 'use cache' makes the build pass (prevents Math.random()
+  // rejection during prerender), but the ISR story is incomplete until you
+  // add cacheTag(tags.products) and cacheLife('hours') on the lines below.
+  "use cache";
+  // TODO (challenge): add these two lines here to complete the ISR setup:
   //   cacheTag(tags.products);
   //   cacheLife('hours');
-  //
-  // Remove this comment block and the TODO once you have fixed the caching.
 
   // Prevent unused-import lint errors on the incomplete skeleton.
   void cacheTag;
@@ -70,12 +78,18 @@ export async function listCachedProducts(
 /**
  * Returns all categories, sorted alphabetically.
  *
- * BROKEN SKELETON — currently NOT cached.  Same fix as listCachedProducts:
- * add 'use cache', cacheTag(tags.categories), cacheLife('hours').
+ * CHALLENGE SKELETON — same structure as listCachedProducts.  Your task:
+ * replace the bare 'use cache' with the full ISR setup:
+ *   cacheTag(tags.categories)
+ *   cacheLife('hours')
+ *
+ * Bare 'use cache' present for the same reason as listCachedProducts — the
+ * build must not fail before learners reach this exercise.
  */
 export async function listCachedCategories(): Promise<Category[]> {
-  // TODO (challenge): add the three lines below:
-  //   'use cache';
+  // STARTER: bare 'use cache' — build passes, ISR is incomplete.
+  "use cache";
+  // TODO (challenge): add these two lines to complete the ISR setup:
   //   cacheTag(tags.categories);
   //   cacheLife('hours');
 
@@ -89,17 +103,18 @@ export async function listCachedCategories(): Promise<Category[]> {
 /**
  * Looks up a category by its URL slug.  Returns null if not found.
  *
- * This is used by the [slug]/page.tsx to get the categoryId needed to filter
- * products.  It is intentionally NOT cached with cacheLife here because the
- * lookup is invoked per-request from inside a generateStaticParams path —
- * at build time the latency is irrelevant; at runtime the slug is known and
- * the overhead is negligible.
+ * Used by the [slug]/page.tsx, generateStaticParams, and generateMetadata.
  *
- * A production app might cache this too (cacheLife('days') — category names
- * rarely change).  That is left as an exercise.
+ * 'use cache' is required here: lib/data's getCategoryBySlug calls
+ * simulateNetworkDelay which uses Math.random().  Next.js 16 rejects
+ * Math.random() during static prerendering outside a cache boundary.
+ * This is NOT the ISR challenge — it is build scaffolding.  cacheTag and
+ * cacheLife are deliberately omitted (no time-based revalidation is needed
+ * for a per-slug build-time lookup).
  */
 export async function getCachedCategoryBySlug(
   slug: string
 ): Promise<Category | null> {
+  "use cache";
   return getCategoryBySlug(slug);
 }

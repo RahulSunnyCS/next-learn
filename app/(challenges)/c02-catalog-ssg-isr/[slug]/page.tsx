@@ -52,12 +52,15 @@ import { ProductGrid, ProductGridSkeleton } from "../_components/ProductGrid";
 // dynamicParams = true  → unknown slugs render on demand (default behaviour)
 // dynamicParams = false → unknown slugs return 404
 //
-// Flip this to `false` to observe the 404 behaviour for unknown slugs.
-// The production default is `true` (new categories can be added after build).
+// NOTE: `export const dynamicParams` is NOT compatible with cacheComponents in
+// Next.js 16, even though it is a different key from `export const dynamic`.
+// The build rejects it.  The default runtime behaviour is `dynamicParams = true`
+// (unknown slugs render on demand), so omitting the export achieves the same
+// effect.  The challenge explanation above is still accurate — learners can
+// read the comment and understand the concept; the live toggle requires a local
+// build without cacheComponents or a Next.js version that lifts the restriction.
 //
-// THIS IS ALLOWED under cacheComponents — only `export const dynamic` is
-// forbidden.  dynamicParams is a different config key.
-export const dynamicParams = true;
+// export const dynamicParams = true;  ← removed: incompatible with cacheComponents
 
 // ─── generateStaticParams ─────────────────────────────────────────────────
 //

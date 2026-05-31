@@ -21,7 +21,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 
 import {
   WrongWayImage,
@@ -31,41 +30,17 @@ import {
 } from "./_components/OptimizedImage";
 import { ScriptDemo } from "./_components/ScriptDemo";
 import { getFeaturedProducts } from "./_lib/catalog";
+// LazyChart is a "use client" wrapper that owns the next/dynamic call.
+// In Next.js 16 (cacheComponents: true), `ssr: false` in next/dynamic is
+// only permitted inside Client Components.  LazyChart is that boundary — it
+// re-exports the dynamically-imported HeavyAnalyticsChart so this Server
+// Component page can render it without triggering the build restriction.
+// The per-route code splitting lesson is fully preserved in LazyChart.tsx.
+import { LazyChart } from "./_components/LazyChart";
 
 export const metadata: Metadata = {
   title: "LAB — Built-in Optimizations",
 };
-
-// ── Per-route code splitting with next/dynamic ───────────────────────────
-//
-// next/dynamic wraps a dynamic import (import()) so Next.js can split the
-// component into a separate JS chunk.  The main route bundle stays small;
-// the heavy component's code is only fetched when it renders.
-//
-// `ssr: false` — skip server rendering for this component.
-//   Why: heavy charting/analytics components often use browser APIs (canvas,
-//   resize observers) that are unavailable during SSR.  Setting ssr:false
-//   keeps the server bundle clean and avoids hydration mismatches.
-//   Tradeoff: the component is invisible in the initial HTML, so it should
-//   never be the LCP element.
-//
-// `loading` — the React fallback shown while the chunk downloads.
-//   Without this, next/dynamic shows nothing until the chunk arrives,
-//   which can cause a jarring pop-in.
-//
-// This call is at module level (outside any component) so the chunk splitting
-// decision is made at build time — NOT inside a render function.
-const HeavyAnalyticsChart = dynamic(
-  () => import("./_components/HeavyAnalyticsChart"),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 animate-pulse h-40 flex items-center justify-center text-sm text-gray-400">
-        Loading chart chunk…
-      </div>
-    ),
-  }
-);
 
 // ─────────────────────────────────────────────────────────────────────────
 // Page (static shell)
@@ -120,7 +95,7 @@ export default function LabOptimizationsPage() {
           <p className="text-sm text-gray-700 leading-relaxed">
             <strong>Cumulative Layout Shift (CLS)</strong> happens when content
             jumps because the browser did not know how big an image would be before
-            it loaded.  A CLS score above 0.1 is rated "Needs Improvement" by
+            it loaded.  A CLS score above 0.1 is rated &quot;Needs Improvement&quot; by
             Google Core Web Vitals.
           </p>
           <p className="text-sm text-gray-700 leading-relaxed">
@@ -253,7 +228,7 @@ export default function LabOptimizationsPage() {
         <div className="rounded-xl border border-gray-200 bg-white p-5 space-y-3">
           <p className="text-sm text-gray-700 leading-relaxed">
             A plain{" "}
-            <code className="font-mono text-xs bg-gray-100 rounded px-1">&lt;script src="..."&gt;</code>{" "}
+            <code className="font-mono text-xs bg-gray-100 rounded px-1">&lt;script src=&quot;...&quot;&gt;</code>{" "}
             in the document head is render-blocking — the browser pauses HTML
             parsing until the script downloads and executes.  Even a{" "}
             <code className="font-mono text-xs bg-gray-100 rounded px-1">&lt;script defer&gt;</code>{" "}
@@ -417,10 +392,11 @@ export default function LabOptimizationsPage() {
             <p className="text-xs font-mono text-indigo-600 bg-indigo-50 rounded px-2 py-1 inline-block">
               HeavyAnalyticsChart — loaded via next/dynamic (separate chunk)
             </p>
-            {/* HeavyAnalyticsChart is imported at module level as a dynamic
-                component — see the const at the top of this file.  Rendering
-                it here causes Next.js to fetch its chunk asynchronously. */}
-            <HeavyAnalyticsChart />
+            {/* LazyChart is a "use client" wrapper that owns the next/dynamic
+                call (ssr:false).  Rendering it here causes Next.js to fetch
+                HeavyAnalyticsChart's chunk asynchronously.  See LazyChart.tsx
+                for the dynamic() call and the code-splitting explanation. */}
+            <LazyChart />
           </div>
 
           {/* How to verify */}
@@ -447,15 +423,17 @@ export default function LabOptimizationsPage() {
 
           {/* Code snippet */}
           <div className="rounded-lg bg-gray-900 text-green-400 p-4 text-xs font-mono space-y-1 overflow-x-auto">
-            <p className="text-gray-400">{`// page.tsx — module level (not inside a component)`}</p>
+            <p className="text-gray-400">{`// _components/LazyChart.tsx — "use client" wrapper`}</p>
+            <p className="text-blue-400">{`"use client";`}</p>
             <p>{`import dynamic from "next/dynamic";`}</p>
             <p className="mt-2">{`const HeavyChart = dynamic(`}</p>
-            <p>{`  () => import("./_components/HeavyAnalyticsChart"),`}</p>
+            <p>{`  () => import("./HeavyAnalyticsChart"),`}</p>
             <p>{`  {`}</p>
             <p>{`    ssr: false,          // skip SSR — uses browser APIs`}</p>
             <p>{`    loading: () => <Skeleton />,`}</p>
             <p>{`  }`}</p>
             <p>{`);`}</p>
+            <p className="mt-2 text-gray-400">{`// In Next.js 16 (cacheComponents), ssr:false requires a Client Component`}</p>
           </div>
         </div>
 

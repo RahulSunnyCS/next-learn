@@ -68,11 +68,11 @@ export default function C06MetadataPage() {
             </code>
             ,{" "}
             <code className="font-mono text-xs bg-indigo-100 rounded px-1">
-              &lt;meta name="description"&gt;
+              &lt;meta name=&quot;description&quot;&gt;
             </code>
             , and{" "}
             <code className="font-mono text-xs bg-indigo-100 rounded px-1">
-              &lt;link rel="canonical"&gt;
+              &lt;link rel=&quot;canonical&quot;&gt;
             </code>
             .
           </li>

@@ -53,7 +53,7 @@ export function ScriptDemo() {
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 space-y-3">
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 ring-1 ring-blue-300">
-            strategy="afterInteractive"
+            strategy=&quot;afterInteractive&quot;
           </span>
           {afterInteractiveFired && (
             <span className="text-xs text-green-700 font-medium">onLoad fired</span>
@@ -89,7 +89,7 @@ export function ScriptDemo() {
       <div className="rounded-lg border border-purple-200 bg-purple-50 p-4 space-y-3">
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-800 ring-1 ring-purple-300">
-            strategy="lazyOnload"
+            strategy=&quot;lazyOnload&quot;
           </span>
           {lazyOnloadFired && (
             <span className="text-xs text-green-700 font-medium">onLoad fired</span>
@@ -118,7 +118,7 @@ export function ScriptDemo() {
       {/* ── beforeInteractive — shown as a code sample only ──────────── */}
       <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 space-y-3">
         <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800 ring-1 ring-amber-300">
-          strategy="beforeInteractive" — layout/page.tsx only
+          strategy=&quot;beforeInteractive&quot; — layout/page.tsx only
         </span>
         <p className="text-sm text-amber-900">
           Use for: consent management (GDPR CMP), critical polyfills that other

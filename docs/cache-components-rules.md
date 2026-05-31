@@ -9,10 +9,13 @@ app-wide. Every challenge page MUST follow these rules or `next build` fails.
 
 ## The rules
 
-1. **NEVER use `export const dynamic = "force-dynamic"` (or `= "force-static"`).**
-   Route-segment `dynamic` config is **incompatible** with `cacheComponents` and
-   fails the build. Under Cache Components, **dynamic is the default**; you opt
-   INTO caching with `'use cache'`, you never opt out with a directive.
+1. **NEVER use the dynamic-control route-segment config exports.** `export const
+   dynamic`, `export const dynamicParams`, `export const revalidate`, and
+   `export const fetchCache` are ALL **incompatible** with `cacheComponents` and
+   fail the build. Under Cache Components, **dynamic is the default** and
+   `dynamicParams` is effectively `true` (unknown params render on demand); you
+   opt INTO caching with `'use cache'`, never out with a directive. (`export const
+   runtime = 'edge'` IS allowed — it selects a runtime, it isn't dynamic control.)
 
 2. **Read uncached/dynamic data only INSIDE a `<Suspense>` boundary.**
    Accessing dynamic data at a route's top level (outside Suspense) fails the build
@@ -45,6 +48,25 @@ app-wide. Every challenge page MUST follow these rules or `next build` fails.
    - `◐ (Partial Prerender)` — static shell + streamed dynamic holes (the target for
      most product pages: fast first paint + fresh dynamic data).
    - `ƒ (Dynamic)` — fully dynamic / route handlers.
+
+## Additional build gotchas (learned building Tier 1)
+
+7. **Non-deterministic calls break static prerender unless cached.** `Math.random()`,
+   `Date.now()`, `new Date()` etc. during prerender fail with a Cache Components
+   error UNLESS they run inside a `'use cache'` boundary or a `<Suspense>`-streamed
+   dynamic component. NOTE: `@/lib/data`'s simulated latency uses `Math.random()`,
+   so **any read from `lib/data` is non-deterministic** — either wrap the accessor
+   in a `'use cache'` function (for cached/static content) or call it inside a
+   `<Suspense>`-wrapped dynamic component (for fresh content). A bare `'use cache'`
+   (no `cacheTag`/`cacheLife`) is enough to satisfy the build.
+
+8. **`next/dynamic` with `ssr: false` must live in a Client Component.** Calling
+   `dynamic(() => import(...), { ssr: false })` in a Server Component fails the
+   build. Put the `dynamic()` call in a small `"use client"` wrapper and render
+   that from the server component.
+
+9. **Escape literal quotes in JSX text** (`&quot;` or `{'"'}`) — the ESLint config
+   flags raw `"` in JSX text/`<code>`/`<span>` content.
 
 ## The legacy model (for the C09 challenge only)
 
