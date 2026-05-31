@@ -186,54 +186,65 @@ function FourCachesExplainer() {
         Next.js 16 supersedes this model, but understanding it is essential
         for reading legacy code and for interviews.
       </p>
+      {/* Static class names — avoid dynamic Tailwind classes which are tree-shaken */}
       <div className="space-y-3">
-        {[
-          {
-            name: "1. Request Memoization",
-            where: "Server RAM — per request",
-            color: "blue",
-            detail:
-              "A plain Map that de-duplicates identical fetch() or unstable_cache() calls within a single render tree. If two Server Components both call fetch(url), only one network request is made. The Map is discarded when the request ends — it never persists to the next request.",
-          },
-          {
-            name: "2. Data Cache",
-            where: "Server disk — persistent",
-            color: "indigo",
-            detail:
-              "A persistent on-disk store (.next/cache/fetch/…) that survives server restarts. Stores resolved fetch() responses and unstable_cache values. Invalidated explicitly by revalidateTag() / revalidatePath(), or by time (revalidate: N seconds). This is the cache that `cacheTag` / `cacheLife` interact with in v16.",
-          },
-          {
-            name: "3. Full Route Cache",
-            where: "Server disk — per deployment",
-            color: "violet",
-            detail:
-              "Pre-rendered HTML + RSC payload for statically generated routes. Built at next build and served directly from disk, bypassing rendering entirely. Invalidated when its underlying Data Cache entries are busted (via revalidateTag). In v16 this maps to the PPR static shell.",
-          },
-          {
-            name: "4. Router Cache",
-            where: "Browser RAM — session",
-            color: "amber",
-            detail:
-              "The browser's in-memory store for RSC payloads of routes the user has navigated to or prefetched. Makes back/forward instant — no server round-trip. TTL: ~5min for static routes, ~30s for dynamic routes. Cleared on hard reload. Call router.refresh() to invalidate the current route.",
-          },
-        ].map(({ name, where, color, detail }) => (
-          <div
-            key={name}
-            className={`rounded-lg border p-4 border-${color}-100 bg-${color}-50`}
-          >
-            <div className="flex items-center justify-between mb-1">
-              <p className={`font-medium text-${color}-900 text-sm`}>{name}</p>
-              <code
-                className={`text-xs font-mono bg-${color}-100 text-${color}-700 rounded px-2 py-0.5`}
-              >
-                {where}
-              </code>
-            </div>
-            <p className={`text-xs text-${color}-800 leading-relaxed`}>
-              {detail}
-            </p>
+        {/* Cache 1: Request Memoization */}
+        <div className="rounded-lg border p-4 border-blue-100 bg-blue-50">
+          <div className="flex items-center justify-between mb-1">
+            <p className="font-medium text-blue-900 text-sm">1. Request Memoization</p>
+            <code className="text-xs font-mono bg-blue-100 text-blue-700 rounded px-2 py-0.5">
+              Server RAM — per request
+            </code>
           </div>
-        ))}
+          <p className="text-xs text-blue-800 leading-relaxed">
+            A plain Map that de-duplicates identical fetch() or unstable_cache() calls within one render tree. If two Server Components both call fetch(url), only one network request is made. The Map is discarded when the request ends — it never persists to the next request.
+          </p>
+        </div>
+
+        {/* Cache 2: Data Cache */}
+        <div className="rounded-lg border p-4 border-indigo-100 bg-indigo-50">
+          <div className="flex items-center justify-between mb-1">
+            <p className="font-medium text-indigo-900 text-sm">2. Data Cache</p>
+            <code className="text-xs font-mono bg-indigo-100 text-indigo-700 rounded px-2 py-0.5">
+              Server disk — persistent
+            </code>
+          </div>
+          <p className="text-xs text-indigo-800 leading-relaxed">
+            A persistent on-disk store (.next/cache/fetch/…) that survives server restarts. Stores resolved fetch() responses and unstable_cache values. Invalidated explicitly by revalidateTag() / revalidatePath(), or by time (revalidate: N seconds). This is the cache that{" "}
+            <code className="font-mono bg-indigo-100 rounded px-1">cacheTag</code>{" "}
+            /{" "}
+            <code className="font-mono bg-indigo-100 rounded px-1">cacheLife</code>{" "}
+            interact with in v16.
+          </p>
+        </div>
+
+        {/* Cache 3: Full Route Cache */}
+        <div className="rounded-lg border p-4 border-violet-100 bg-violet-50">
+          <div className="flex items-center justify-between mb-1">
+            <p className="font-medium text-violet-900 text-sm">3. Full Route Cache</p>
+            <code className="text-xs font-mono bg-violet-100 text-violet-700 rounded px-2 py-0.5">
+              Server disk — per deployment
+            </code>
+          </div>
+          <p className="text-xs text-violet-800 leading-relaxed">
+            Pre-rendered HTML + RSC payload for statically generated routes. Built at next build and served directly from disk, bypassing rendering entirely. Invalidated when its underlying Data Cache entries are busted (via revalidateTag). In v16 this maps to the PPR static shell.
+          </p>
+        </div>
+
+        {/* Cache 4: Router Cache */}
+        <div className="rounded-lg border p-4 border-amber-100 bg-amber-50">
+          <div className="flex items-center justify-between mb-1">
+            <p className="font-medium text-amber-900 text-sm">4. Router Cache</p>
+            <code className="text-xs font-mono bg-amber-100 text-amber-700 rounded px-2 py-0.5">
+              Browser RAM — session
+            </code>
+          </div>
+          <p className="text-xs text-amber-800 leading-relaxed">
+            The browser&apos;s in-memory store for RSC payloads of routes the user has navigated to or prefetched. Makes back/forward instant — no server round-trip. TTL: ~5min for static routes, ~30s for dynamic routes. Cleared on hard reload. Call{" "}
+            <code className="font-mono bg-amber-100 rounded px-1">router.refresh()</code>{" "}
+            to invalidate the current route.
+          </p>
+        </div>
       </div>
       <p className="text-xs text-gray-500 mt-2">
         Full diagrams and interaction flows in{" "}
