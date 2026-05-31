@@ -1,0 +1,8 @@
+{
+  "id": 4,
+  "slug": "c04-rsc-boundary",
+  "title": "RSC vs Client Boundary Refactor",
+  "tier": 1,
+  "topics": ["RSC", "use client", "bundle size", "CSR", "composition"],
+  "status": "not-started"
+}

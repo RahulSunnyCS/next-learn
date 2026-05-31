@@ -1,0 +1,8 @@
+{
+  "id": 6,
+  "slug": "c06-metadata-seo",
+  "tier": 1,
+  "title": "Metadata & SEO",
+  "topics": ["Metadata API", "generateMetadata", "OG image", "sitemap", "robots", "SEO"],
+  "status": "not-started"
+}

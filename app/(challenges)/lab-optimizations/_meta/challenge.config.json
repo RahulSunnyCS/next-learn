@@ -1,0 +1,8 @@
+{
+  "id": 7,
+  "slug": "lab-optimizations",
+  "title": "Built-in Next.js Optimizations — Guided Checklist",
+  "tier": 1,
+  "topics": ["next/image", "CLS", "next/font", "next/script", "code splitting", "prefetch"],
+  "status": "not-started"
+}

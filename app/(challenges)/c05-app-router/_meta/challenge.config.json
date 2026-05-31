@@ -1,0 +1,8 @@
+{
+  "id": 5,
+  "slug": "c05-app-router",
+  "title": "App Router Architecture — Parallel Routes, Intercepting Routes, and the Modal-via-URL Pattern",
+  "tier": 1,
+  "topics": ["App Router", "parallel routes", "intercepting routes", "error boundaries"],
+  "status": "not-started"
+}
