@@ -6,146 +6,135 @@
 // your defend-it.md worksheet. Compare it against your implementation to
 // see what you got right, what you missed, and why.
 //
+// NOTE: This file is standalone documentation. The imports below are
+// illustrative comments — not real import statements. The working implementation
+// lives in app/(challenges)/c03-product-ppr/[slug]/page.tsx and its siblings.
+//
 // READING GUIDE
 // ─────────────
-// 1. Data layer   → _lib/product.ts     (what is cached and why)
-// 2. Static shell → _components/ProductShell.tsx  (prerendered at build time)
-// 3. Dynamic holes→ _components/{LiveInventory,Recommendations,Reviews}.tsx
-// 4. Error boundary→ [slug]/error.tsx  (what it catches, what it doesn't)
-// 5. Route loading → [slug]/loading.tsx (route-level vs manual Suspense)
-// 6. This file    → how the pieces compose into a ◐ PPR page
+// 1. Data layer    → app/(challenges)/c03-product-ppr/_lib/product.ts
+//                    (what is cached and why — 'use cache', cacheTag, cacheLife)
+// 2. Static shell  → app/(challenges)/c03-product-ppr/_components/ProductShell.tsx
+//                    (prerendered at build time, uses only cached data)
+// 3. Dynamic holes → app/(challenges)/c03-product-ppr/_components/
+//                    {LiveInventory, Recommendations, Reviews}.tsx
+//                    (uncached, each runs per-request, each in its own <Suspense>)
+// 4. Error boundary→ app/(challenges)/c03-product-ppr/[slug]/error.tsx
+//                    (what it catches vs what it doesn't — the after-flush rule)
+// 5. Route loading → app/(challenges)/c03-product-ppr/[slug]/loading.tsx
+//                    (route-level Suspense vs granular Suspense — why both exist)
+// 6. This file     → how the pieces compose into a ◐ PPR page
 
-import { Suspense } from "react";
-import type { Metadata } from "next";
-import { getProductShellData } from "../_lib/product";
-import { ProductShell, ProductNotFound } from "../_components/ProductShell";
-import { LiveInventory, LiveInventorySkeleton } from "../_components/LiveInventory";
-import { Recommendations, RecommendationsSkeleton } from "../_components/Recommendations";
-import { Reviews, ReviewsSkeleton } from "../_components/Reviews";
+// ---------------------------------------------------------------------------
+// Data layer pattern (see _lib/product.ts)
+// ---------------------------------------------------------------------------
+//
+//   // CACHED — safe to call at page top level:
+//   async function getProductShellData(slug: string) {
+//     "use cache";
+//     cacheTag(tags.product(slug));  // tag: "product:<slug>"
+//     cacheLife("hours");            // TTL: revalidate once per hour
+//     return getProductBySlug(slug); // calls lib/data repository
+//   }
+//
+//   // UNCACHED — must be inside <Suspense>:
+//   getProductBySlug(slug);     // LiveInventory uses this directly
+//   listProducts({ categoryId }); // Recommendations uses this directly
+//   listReviews(productId);       // Reviews uses this directly
 
-// ────────────────────────────────────────────────────────────────────────────
-// Metadata
-// The metadata generator uses the CACHED product data accessor. It runs at
-// build time for statically-known slugs, or per-request for unknown slugs
-// (first access). Because the accessor is 'use cache', the data is fetched
-// once and reused by both generateMetadata and the page component.
-// ────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
+// Page structure pattern
+// ---------------------------------------------------------------------------
+//
+// export default async function Page({ params }) {
+//   const { slug } = await params;              // await params — Next.js 16 rule
+//   const product = await getProductShellData(slug); // CACHED read at top level
+//
+//   if (!product) return <ProductNotFound slug={slug} />;
+//
+//   return (
+//     <div>
+//       {/* STATIC SHELL — prerendered, arrives in first byte */}
+//       <ProductShell product={product} />
+//
+//       {/* DYNAMIC HOLE #1 — uncached, streams in independently */}
+//       <Suspense fallback={<LiveInventorySkeleton />}>
+//         <LiveInventory slug={slug} />
+//       </Suspense>
+//
+//       {/* DYNAMIC HOLE #2 — uncached, concurrent with hole #1 */}
+//       <Suspense fallback={<RecommendationsSkeleton />}>
+//         <Recommendations currentSlug={slug} categoryId={product.categoryId} />
+//       </Suspense>
+//
+//       {/* DYNAMIC HOLE #3 — uncached, concurrent with holes #1 and #2 */}
+//       <Suspense fallback={<ReviewsSkeleton />}>
+//         <Reviews productId={product.id} />
+//       </Suspense>
+//
+//       {/* ERROR DEMO — throws after shell flush, caught by internal try-catch */}
+//       <Suspense fallback={<ErrorDemoSkeleton />}>
+//         <StreamErrorDemo />
+//       </Suspense>
+//     </div>
+//   );
+// }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  const { slug } = await params;
-  const product = await getProductShellData(slug);
+// ---------------------------------------------------------------------------
+// Key rules enforced by cacheComponents: true
+// ---------------------------------------------------------------------------
+//
+//   1. NO `export const dynamic` — disallowed, build rejects it.
+//   2. Uncached reads only INSIDE <Suspense> — or build fails.
+//   3. 'use cache' + cacheTag() + cacheLife() — the opt-in pattern.
+//   4. await params / await searchParams / await cookies() — all Promises in v16.
+//
+// ---------------------------------------------------------------------------
+// The error-after-flush gotcha
+// ---------------------------------------------------------------------------
+//
+//   Once the shell HTML is flushed (HTTP 200 + first bytes sent), errors
+//   thrown inside Suspense holes:
+//     - Cannot change the HTTP status (still 200).
+//     - Cannot reach error.tsx (already past the flush point).
+//     - Must be handled inside the async component with try-catch.
+//
+//   error.tsx ONLY catches errors thrown during the initial SYNCHRONOUS render
+//   of the shell — BEFORE any HTTP byte is sent.
+//
+//   StreamErrorDemo demonstrates this by:
+//     1. Awaiting 60ms (simulating async work, ensuring flush has happened).
+//     2. Throwing intentionally.
+//     3. Catching its own error in a try-catch and returning an error fallback.
+//     4. The HTTP response remains 200. error.tsx is never invoked.
+//
+// ---------------------------------------------------------------------------
+// loading.tsx vs manual <Suspense> — summary
+// ---------------------------------------------------------------------------
+//
+//   loading.tsx:
+//     - Wraps the ENTIRE page segment (coarse).
+//     - Shown during client-side navigation before the segment is ready.
+//     - Good: prevents a blank page during navigation transitions.
+//     - Bad: replaces everything; the user sees nothing of the page until
+//       the whole segment renders.
+//
+//   Manual <Suspense fallback={<Skeleton/>}>:
+//     - Wraps ONE async component (granular).
+//     - Multiple boundaries resolve CONCURRENTLY.
+//     - The static shell is always visible; only the holes show skeletons.
+//     - This is the PPR model — use manual Suspense for fine-grained streaming.
+//
+// ---------------------------------------------------------------------------
+// Build output — what ◐ means
+// ---------------------------------------------------------------------------
+//
+//   ◐  /c03-product-ppr/[slug]   (Partial Prerender)
+//
+//   ◐ = static shell prerendered at build (or on first request, then cached)
+//       + dynamic holes run per-request and stream in
+//
+//   ○ = fully static (SSG — no per-request work)
+//   ƒ = fully dynamic (SSR — all work per-request, no prerendered shell)
 
-  if (!product) return { title: "Product not found — C03 PPR" };
-  return {
-    title: `${product.name} — C03 PPR`,
-    description: product.description,
-  };
-}
-
-// ────────────────────────────────────────────────────────────────────────────
-// Page
-// ────────────────────────────────────────────────────────────────────────────
-
-export default async function C03ProductPPRPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  // KEY DECISION: params is awaited BEFORE any conditional returns.
-  // Next.js 16 makes params a Promise — must be awaited. This is NOT a
-  // dynamic read (it's the route parameter, not a request header/cookie),
-  // so it does not force the page into "dynamic" territory.
-  const { slug } = await params;
-
-  // CACHED read — the ONLY data access at page top level.
-  // 'use cache' inside getProductShellData means this call goes through the
-  // cache. Safe to call outside <Suspense> because it is cached.
-  const product = await getProductShellData(slug);
-
-  if (!product) {
-    return (
-      <div className="max-w-4xl mx-auto space-y-8">
-        <p className="text-xs font-mono text-indigo-500">c03-product-ppr / [slug]</p>
-        <ProductNotFound slug={slug} />
-      </div>
-    );
-  }
-
-  // KEY INSIGHT: everything below the opening <div> that does NOT involve an
-  // async component is the STATIC SHELL. It is prerendered to HTML at build
-  // time (or on first request, then cached) and streamed first. The Suspense
-  // boundaries below each mark the start of a DYNAMIC HOLE.
-
-  return (
-    <div className="max-w-4xl mx-auto space-y-10">
-      <p className="text-xs font-mono text-indigo-500">c03-product-ppr / [slug]</p>
-
-      {/* ── STATIC SHELL ── data comes from cached getProductShellData */}
-      <ProductShell product={product} />
-
-      {/* ── DYNAMIC HOLE #1: stock status ──
-           Uncached — every request gets a fresh stock count.
-           The <Suspense> fallback is shown in the initial HTML for this hole.
-           When LiveInventory resolves, React streams the replacement HTML. */}
-      <section className="rounded-xl border border-gray-100 bg-white p-5 space-y-3">
-        <h2 className="text-sm font-semibold text-gray-900">Live Inventory</h2>
-        <Suspense fallback={<LiveInventorySkeleton />}>
-          <LiveInventory slug={slug} />
-        </Suspense>
-      </section>
-
-      {/* ── DYNAMIC HOLE #2: recommendations ──
-           Uncached — simulates per-user personalisation.
-           Note that the shell above and hole #1 are already visible to the
-           user while hole #2 is still resolving. Holes are CONCURRENT. */}
-      <section className="rounded-xl border border-gray-100 bg-white p-5 space-y-3">
-        <h2 className="text-sm font-semibold text-gray-900">You Might Also Like</h2>
-        <Suspense fallback={<RecommendationsSkeleton />}>
-          <Recommendations currentSlug={slug} categoryId={product.categoryId} />
-        </Suspense>
-      </section>
-
-      {/* ── DYNAMIC HOLE #3: reviews ──
-           Uncached — new reviews should appear immediately without invalidation. */}
-      <section className="rounded-xl border border-gray-100 bg-white p-5 space-y-3">
-        <h2 className="text-sm font-semibold text-gray-900">Customer Reviews</h2>
-        <Suspense fallback={<ReviewsSkeleton />}>
-          <Reviews productId={product.id} />
-        </Suspense>
-      </section>
-
-      {/* ── ERROR DEMO ──
-           StreamErrorDemo throws AFTER the shell is flushed. The error is
-           contained by its own try-catch — the route error.tsx is not invoked,
-           and the HTTP status stays 200. */}
-      <section className="rounded-xl border border-orange-100 bg-orange-50 p-5 space-y-3">
-        <h2 className="text-sm font-semibold text-orange-900">Error-after-flush Demo</h2>
-        <Suspense fallback={<div className="h-16 rounded-lg bg-orange-100 animate-pulse" />}>
-          <StreamErrorDemo />
-        </Suspense>
-      </section>
-    </div>
-  );
-}
-
-// ── Error demo ─────────────────────────────────────────────────────────────
-
-async function StreamErrorDemo() {
-  await new Promise((resolve) => setTimeout(resolve, 60));
-  try {
-    throw new Error("Simulated error after shell flush");
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return (
-      <div className="rounded-lg border border-orange-200 bg-white p-4 text-sm text-orange-700 space-y-1">
-        <p className="font-medium">Error caught inside the component (not by error.tsx):</p>
-        <p className="font-mono text-xs bg-orange-50 rounded p-2">{message}</p>
-        <p className="text-xs text-gray-500">HTTP status: 200 — check Network tab.</p>
-      </div>
-    );
-  }
-}
+export {};
