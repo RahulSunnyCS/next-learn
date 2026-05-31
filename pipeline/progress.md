@@ -6,6 +6,8 @@
 **Effort:** Planning at max (per CLAUDE.md default table). Global effort: default.
 **recommendation_rounds_used:** 0
 
+**AUTONOMY GRANT (user, 2026-05-31):** Auto-approve ALL human gates (Gate 1 done; Gate 2 + Gate 3 pre-approved) and run Phase 2→7 to completion WITHOUT pausing — EXCEPT on a "critical concern": an unsafe security default, a Critical/High Phase-4 finding in auth/server-action/OAuth solutions, an architectural ambiguity risking large rework, a foundation build failure I can't resolve, or anything contradicting user intent. Commit+push after every batch (ephemeral container). At cleanup: delete pipeline/ but PRESERVE a learner-facing challenge checklist; permanent record → docs/epics/.
+
 ## Phase status
 
 - [x] Phase 0 — Triage (risk_manifest.json written)
