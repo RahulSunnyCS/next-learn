@@ -1,0 +1,8 @@
+{
+  "id": 3,
+  "slug": "c03-product-ppr",
+  "title": "Product Detail: Partial Prerendering + Streaming SSR",
+  "tier": 1,
+  "topics": ["PPR", "Streaming SSR", "Suspense", "use cache"],
+  "status": "not-started"
+}

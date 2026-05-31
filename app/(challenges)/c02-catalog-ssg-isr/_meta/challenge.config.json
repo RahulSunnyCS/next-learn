@@ -1,0 +1,8 @@
+{
+  "id": 2,
+  "slug": "c02-catalog-ssg-isr",
+  "title": "Catalog: SSG + ISR with Cache Components",
+  "tier": 1,
+  "topics": ["SSG", "ISR", "use cache", "generateStaticParams"],
+  "status": "not-started"
+}
