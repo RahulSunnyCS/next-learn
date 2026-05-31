@@ -45,12 +45,13 @@ import type { Metadata } from "next";
 
 // These helpers live in the challenge's _lib, not here.
 // Solutions reference the challenge implementation to avoid duplication.
+// The @/* alias maps to the repo root (see tsconfig.json paths).
 import {
   getCachedProduct,
   formatPrice,
   truncate,
   type Product,
-} from "../../app/(challenges)/c06-metadata-seo/_lib/seo";
+} from "@/app/(challenges)/c06-metadata-seo/_lib/seo";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // generateMetadata — the heart of this challenge

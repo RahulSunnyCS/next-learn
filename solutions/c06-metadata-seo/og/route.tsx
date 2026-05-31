@@ -26,4 +26,4 @@
 //   opengraph-image.tsx is the recommended pattern.  og/route.tsx is here
 //   only to demonstrate the Route Handler alternative.
 
-export { GET } from "../../app/(challenges)/c06-metadata-seo/og/route";
+export { GET } from "@/app/(challenges)/c06-metadata-seo/og/route";
