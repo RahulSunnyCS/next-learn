@@ -74,6 +74,7 @@ import QueryProvider from "../../app/(challenges)/c14-tanstack-query/_components
 import InfiniteList from "../../app/(challenges)/c14-tanstack-query/_components/InfiniteList";
 import SearchAsYouType from "./_components/SearchAsYouType";
 import { getProductPage } from "../../app/(challenges)/c14-tanstack-query/_lib/search-route";
+import type { ProductPage } from "../../app/(challenges)/c14-tanstack-query/_lib/search-route";
 
 export const metadata: Metadata = {
   title: "C14 — TanStack Query (Reference Solution)",
@@ -147,6 +148,11 @@ async function PrefetchedProductList() {
     queryFn: ({ pageParam }) =>
       getProductPage(pageParam as number, 6, undefined),
     initialPageParam: 1,
+    // getNextPageParam is required when pages is set.
+    getNextPageParam: (lastPage: ProductPage) =>
+      (lastPage as { hasNextPage: boolean; page: number }).hasNextPage
+        ? (lastPage as { page: number }).page + 1
+        : undefined,
     pages: 1, // only prefetch the first page — rest load on demand
   });
 

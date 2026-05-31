@@ -76,9 +76,11 @@ export async function saveItem(itemId: string): Promise<ActionResult> {
   savedItemsStore.set(DEMO_USER_ID, set);
 
   // Invalidate the server-side 'use cache' entry.
-  // The TWO-ARGUMENT form is v16's API: (tag: string, cacheProfile: string).
-  // We use "seconds" so the demo shows immediate revalidation during the session.
-  revalidateTag(savedItemsTag(DEMO_USER_ID));
+  // v16 API: revalidateTag(tag, profile) — two arguments required.
+  // The profile must match a valid cacheLife profile name. We use "seconds"
+  // to match the cacheLife("seconds") set on the getCachedSavedItems function
+  // in page.tsx, ensuring the invalidation targets the correct cache tier.
+  revalidateTag(savedItemsTag(DEMO_USER_ID), "seconds");
 
   return { success: true, items: Array.from(set) };
 }

@@ -14,7 +14,12 @@
 //      appear on the correct form fields.
 
 import type { Metadata } from "next";
-import CheckoutForm from "../(challenges)/c17-form-state-machine/_components/CheckoutForm";
+// Using the @/ alias (repo root) to reference the challenge component.
+// The solution page intentionally re-uses the same component rather than
+// duplicating it — all the interesting annotated logic lives in the
+// challenge's _lib/form-reducer.ts and _lib/actions.ts, which the
+// solutions/_lib/form-reducer.ts re-explains in detail.
+import CheckoutForm from "@/app/(challenges)/c17-form-state-machine/_components/CheckoutForm";
 
 export const metadata: Metadata = {
   title: "C17 — Form State-Machine (Solution)",
