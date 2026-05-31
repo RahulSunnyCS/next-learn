@@ -13,9 +13,10 @@
   - [x] Red Team sprint 1 — found verification + caching-vocab + auth-sequencing gaps → folded into v2
   - [x] Red Team sprint 2 — CRITICAL: curriculum was built on pre-v16 APIs. Verified Next.js 16 (Oct 2025) is current stable: middleware→proxy.ts (Node), unstable_cache→'use cache', PPR→cacheComponents, cacheTag/cacheLife stable, revalidateTag 2-arg, async request APIs await-only, Turbopack default. Folded into v3.
   - [x] Internal score — 8.5/10 (Completeness 9, Security 8.5, Feasibility 8.5, Clarity 8.5) ≥ 8 → no 3rd sprint
-  - [ ] QA checklist (running)
-  - [ ] Translated Plan Report (running)
-  - [ ] **HUMAN GATE 1** (present + wait)
+  - [x] QA checklist — 🔴11 / 🟡24 / 🟢6 (pipeline/qa-checklist.md)
+  - [x] Translated Plan Report
+  - [ ] **HUMAN GATE 1** — PRESENTED; awaiting user decisions D1 (version/model), D2 (track), D3 (theme), D4 (realism)
+  - recommendation_rounds_used: 0 (R1/R2/R3 offered; R1-R3 already folded into the recommended plan)
 
 ### v3 revisions folded in (from sprint 1 + 2)
 - Version/model fork resolved at C00 (RECOMMEND: pin Next 16, Cache Components primary, teach legacy four-cache model + migration as "what's in production / interview classic"). USER DECISION at Gate 1.
