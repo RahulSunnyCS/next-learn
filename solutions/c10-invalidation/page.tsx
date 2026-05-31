@@ -207,8 +207,9 @@ function AddReviewForm({
   label: string;
 }) {
   // Cast to void-returning signature — React <form> action expects void | Promise<void>.
+  // Double-cast through unknown required by TypeScript strict mode when types don't overlap.
   // The return value is ignored by the form; it would only matter with useActionState().
-  const voidAction = action as (formData: FormData) => Promise<void>;
+  const voidAction = action as unknown as (formData: FormData) => Promise<void>;
   return (
     <form action={voidAction} className="flex gap-2 flex-wrap items-end border-t border-gray-200 pt-3">
       <p className="w-full text-xs font-semibold text-gray-600">{label}</p>

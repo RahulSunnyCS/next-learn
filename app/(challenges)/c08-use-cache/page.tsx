@@ -39,7 +39,7 @@
 import { Suspense } from "react";
 import { cache } from "react"; // per-request dedup, NOT cross-request persistence
 import type { Metadata } from "next";
-import { getProductById, listProducts, tags } from "@/lib/data";
+import { getProductById, listProducts } from "@/lib/data";
 import type { Product } from "@/lib/data";
 import {
   getAllCachedCategories,
