@@ -15,8 +15,16 @@
   - [x] Internal score — 8.5/10 (Completeness 9, Security 8.5, Feasibility 8.5, Clarity 8.5) ≥ 8 → no 3rd sprint
   - [x] QA checklist — 🔴11 / 🟡24 / 🟢6 (pipeline/qa-checklist.md)
   - [x] Translated Plan Report
-  - [ ] **HUMAN GATE 1** — PRESENTED; awaiting user decisions D1 (version/model), D2 (track), D3 (theme), D4 (realism)
-  - recommendation_rounds_used: 0 (R1/R2/R3 offered; R1-R3 already folded into the recommended plan)
+  - [x] **HUMAN GATE 1 — APPROVED** with decisions (see below)
+  - recommendation_rounds_used: 0 (R1/R2/R3 were already folded into the recommended plan; user selected a presented track, not a new AI rec → no re-plan round consumed)
+
+### Gate 1 outcome (decisions locked)
+- **D1 = Next.js 16 + BOTH models** — v16 Cache Components / 'use cache' / cacheTag/cacheLife / proxy.ts PRIMARY; legacy four-cache + unstable_cache + middleware + migration taught.
+- **D2 = Deep (~24)** — Complete (C00–C20) + C21 testing + C22 capstone + C23 real OAuth (Auth.js) + C24 large-scale normalized state.
+- **D3 = theme delegated → orchestrator chose "Nextmart" (storefront + seller dashboard).**
+- **D4 = in-memory mock data** (no DB). MITIGATION: thin async repo layer over in-memory stores w/ seeded fixtures + simulated latency; some reads via Route Handlers so fetch-cache is demonstrable; 'use cache'/unstable_cache/ISR wrap the repo. OAuth (C23) uses Auth.js JWT strategy (no DB) — compatible; needs a free OAuth app or a no-setup Credentials fallback.
+
+## NEXT: Phase 2 — Decomposition (awaiting user go / /implement)
 
 ### v3 revisions folded in (from sprint 1 + 2)
 - Version/model fork resolved at C00 (RECOMMEND: pin Next 16, Cache Components primary, teach legacy four-cache model + migration as "what's in production / interview classic"). USER DECISION at Gate 1.

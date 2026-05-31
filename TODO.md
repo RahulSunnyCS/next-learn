@@ -1,26 +1,26 @@
 # TODO — Next.js 16 Learning Curriculum ("Nextmart")
 
 > Single-writer mirror of the plan (orchestrator-maintained). Source of truth: `pipeline/`.
-> **Status: Phase 1 complete → awaiting HUMAN GATE 1 approval + 4 decisions.**
-> Nothing below is built yet. Track/version decisions may change the in-scope set.
+> **Status: HUMAN GATE 1 APPROVED. Track = Deep (~24), theme = Nextmart, data = in-memory. Next: Phase 2 decomposition.**
+> Nothing below is built yet.
 
 ## Pipeline state
 - [x] Phase 0 — Triage (MEDIUM · feature-full · 2 sprints)
 - [x] Phase 1 — Planning (Red Team ×2 · score 8.5/10 · QA checklist · translated)
-- [ ] **HUMAN GATE 1** ← you are here
-- [ ] Phase 2 — Decomposition (atomic task contracts per challenge)
+- [x] **HUMAN GATE 1 — APPROVED**
+- [ ] Phase 2 — Decomposition (atomic task contracts per challenge) ← next
 - [ ] Phase 3 — Implementation
 - [ ] Phase 4 — Specialist Review → GATE 2
 - [ ] Phase 5/6 — Tests + Automation Gate
 - [ ] Phase 7 — Final Review → GATE 3
 
-## Decisions pending (Gate 1)
-- [ ] D1 — Next.js version/model: **16 + Cache-Components-primary + legacy taught (recommended)** vs 15-primary
-- [ ] D2 — Track: Core ~15 / **Complete ~20–21 (recommended)** / Deep ~24
-- [ ] D3 — Theme: **Nextmart storefront+dashboard (recommended)** vs blog / social / SaaS
-- [ ] D4 — Realism: **mocked checkout + real-ish session + Prisma/SQLite (recommended)** vs real OAuth / in-memory
+## Decisions locked (Gate 1 ✓)
+- [x] D1 — **Next.js 16 + both models** (Cache Components primary + legacy four-cache + migration)
+- [x] D2 — **Deep (~24)**
+- [x] D3 — **Nextmart** storefront + seller dashboard (delegated to orchestrator)
+- [x] D4 — **In-memory mock data** (async repo + simulated latency + route-handler reads for fetch-cache)
 
-## Proposed curriculum (Recommended track ~20–21, 5 tiers)
+## Curriculum (Deep track ~24, 6 tiers)
 ### Tier 0 — Foundation
 - [ ] C00 — Scaffold + pin Next 16 + rendering-strategy decision log
 - [ ] C01 — Auth/session foundation (attack-the-toy → rebuild on vetted library; frozen `lib/auth/`)
@@ -48,5 +48,10 @@
 - [ ] C19 — Flagship: two sources of truth (client vs server cache) + cross-tab sync
 ### Tier 4 — Deployment
 - [ ] C20 — Runtime model (serverless vs edge, output:'export', standalone/Docker, ISR at infra)
+### Tier 5 — Deep extensions
+- [ ] C21 — Testing (RSC + Server Action + Route Handler unit/integration + Playwright E2E)
+- [ ] C22 — Capstone: polish Nextmart into a deployable portfolio piece (perf budget, a11y, error/empty states, README, deploy)
+- [ ] C23 — Real OAuth via Auth.js (JWT session, no DB; replaces self-contained session; OAuth flow/callbacks/CSRF state) — needs a free OAuth app or a no-setup Credentials fallback
+- [ ] C24 — Large-scale normalized state (seller data-grid: normalize, memoized selectors, virtualization, no re-render storms)
 
-_Testing woven as acceptance on 3 representative solutions (RSC / Server Action / Route Handler)._
+_Testing also woven as acceptance on 3 representative solutions (RSC / Server Action / Route Handler); C21 is the dedicated deep-dive._
