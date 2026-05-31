@@ -10,12 +10,23 @@
 
 - [x] Phase 0 — Triage (risk_manifest.json written)
 - [ ] Phase 1 — Planning (Red Team loop ×2 → score → QA Planner → Translator → seed TODO)
-  - [ ] Red Team sprint 1
-  - [ ] Red Team sprint 2
-  - [ ] Internal score
-  - [ ] QA checklist
-  - [ ] Translated Plan Report
+  - [x] Red Team sprint 1 — found verification + caching-vocab + auth-sequencing gaps → folded into v2
+  - [x] Red Team sprint 2 — CRITICAL: curriculum was built on pre-v16 APIs. Verified Next.js 16 (Oct 2025) is current stable: middleware→proxy.ts (Node), unstable_cache→'use cache', PPR→cacheComponents, cacheTag/cacheLife stable, revalidateTag 2-arg, async request APIs await-only, Turbopack default. Folded into v3.
+  - [x] Internal score — 8.5/10 (Completeness 9, Security 8.5, Feasibility 8.5, Clarity 8.5) ≥ 8 → no 3rd sprint
+  - [ ] QA checklist (running)
+  - [ ] Translated Plan Report (running)
   - [ ] **HUMAN GATE 1** (present + wait)
+
+### v3 revisions folded in (from sprint 1 + 2)
+- Version/model fork resolved at C00 (RECOMMEND: pin Next 16, Cache Components primary, teach legacy four-cache model + migration as "what's in production / interview classic"). USER DECISION at Gate 1.
+- "Defend It" active-recall = committed artifact before solution + self-scored rubric (enforceable, not honor-system).
+- C01 auth = toy-tamperable-session (to demonstrate attacks) THEN vetted-library (jose/iron-session); downstream depends on the library version. Frozen immutable lib/auth/ in files_forbidden for dependents (Phase-2 independence).
+- Caching split: C08 current model ('use cache'/cacheTag/cacheLife, cache() vs 'use cache') + C09 legacy four-cache + migration + C10 invalidation/dynamic-triggers/draftMode (revalidateTag 2-arg, async-only request APIs).
+- C13 Edge restricted-API lesson moved to runtime='edge' route handler (proxy.ts is Node in v16).
+- C03 explicit "name-the-strategy" table (CSR/SSR/SSG/ISR/Streaming-SSR/PPR distinct) + deliberate CSR widget.
+- State (≥5) sharpened to distinct named problems (C15 cart+hydration-reconcile, C16 URL-as-truth, C17 form state-machine, C18 optimistic failure-path, C19 two-sources-of-truth+cross-tab flagship).
+- Testing = acceptance criterion on ~3 representative solutions (Recommended); dedicated challenge in Deep.
+- Tracks: A "Core/on-ramp ~15" (reframed as Phase 1 of B, not a knowingly-incomplete finish), B "Recommended/Complete ~20-21" (satisfies all incl. ≥5 state), C "Deep ~24".
 - [ ] Phase 2 — Decomposition
 - [ ] Phase 3 — Implementation
 - [ ] Phase 4 — Specialist Review (security + performance + architecture) → HUMAN GATE 2
