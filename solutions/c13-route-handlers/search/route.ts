@@ -13,7 +13,25 @@
 //   4. Error boundary: 400 for user errors, 500 for unexpected errors
 
 import { NextRequest, NextResponse } from "next/server";
-import type { SearchResponse } from "../../app/(challenges)/c13-route-handlers/_lib/search";
+
+// Local type definition for the reference solution.
+// The production handler imports this from the colocated _lib/search.ts.
+// We redefine it inline here to avoid cross-solution import paths that break
+// TypeScript's module resolution when the solutions/ directory is resolved
+// independently of the app/ directory.
+interface SearchResponse {
+  results: Array<{
+    id: string;
+    slug: string;
+    name: string;
+    priceCents: number;
+    currency: string;
+    rating: number;
+    image: string | null;
+  }>;
+  total: number;
+  query: string;
+}
 
 // ── Teaching annotation: GET caching in v16 ──────────────────────────────
 //
