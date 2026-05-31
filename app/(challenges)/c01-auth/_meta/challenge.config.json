@@ -1,0 +1,8 @@
+{
+  "id": 1,
+  "slug": "c01-auth",
+  "title": "Session Security — Attack the Toy, Then Build It Right",
+  "tier": 0,
+  "topics": ["auth", "sessions", "security", "cookies", "JWT"],
+  "status": "not-started"
+}

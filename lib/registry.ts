@@ -31,7 +31,7 @@ import fs, { globSync } from "node:fs";
 // Types (shared — also imported by challenge.config.ts files)
 // --------------------------------------------------------------------------
 
-export type ChallengeTier = 1 | 2 | 3 | 4 | 5;
+export type ChallengeTier = 0 | 1 | 2 | 3 | 4 | 5;
 export type ChallengeStatus = "not-started" | "in-progress" | "complete";
 
 export interface ChallengeConfig {
@@ -41,7 +41,7 @@ export interface ChallengeConfig {
   slug: string;
   /** Human-readable title. */
   title: string;
-  /** Tier 1–5 as defined by BUILD-ORDER. */
+  /** Tier 0–5 (0 = foundation) as defined by the curriculum / BUILD-ORDER. */
   tier: ChallengeTier;
   /** Concept tags, e.g. ["SSG", "ISR", "caching"]. */
   topics: string[];

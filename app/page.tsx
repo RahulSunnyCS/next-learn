@@ -7,10 +7,11 @@ import type { DiscoveredChallenge } from "@/lib/registry";
 
 // ─── Tier meta (display names only — not routing data) ───────────────────
 const TIER_LABELS: Record<number, string> = {
+  0: "Tier 0 — Foundation",
   1: "Tier 1 — Rendering & Components",
   2: "Tier 2 — Data, Caching & Actions",
   3: "Tier 3 — Client Data & State",
-  4: "Tier 4 — Deployment, Testing & OAuth",
+  4: "Tier 4 — Deployment, Testing, OAuth & Advanced",
   5: "Tier 5 — Capstone",
 };
 

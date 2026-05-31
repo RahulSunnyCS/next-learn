@@ -10,3 +10,5 @@
 | Phase 1 | Translator (Plan Report) | translator | haiku | medium | ~12k |
 | Phase 2 | Decomposition (27 contracts) | general-purpose | opus | high | ~102k |
 | Phase 3 | T-00 Scaffold & harness | implementor | sonnet | high | ~89k |
+| Phase 3 | T-01 Data layer | implementor | sonnet | high | ~63k |
+| Phase 3 | T-02 Auth foundation (C01) | implementor | sonnet | high | ~74k |
