@@ -24,7 +24,11 @@
 - **D3 = theme delegated → orchestrator chose "Nextmart" (storefront + seller dashboard).**
 - **D4 = in-memory mock data** (no DB). MITIGATION: thin async repo layer over in-memory stores w/ seeded fixtures + simulated latency; some reads via Route Handlers so fetch-cache is demonstrable; 'use cache'/unstable_cache/ISR wrap the repo. OAuth (C23) uses Auth.js JWT strategy (no DB) — compatible; needs a free OAuth app or a no-setup Credentials fallback.
 
-## NEXT: Phase 2 — Decomposition (awaiting user go / /implement)
+- [ ] Phase 2 — Decomposition (IN PROGRESS — 27 task contracts: T-00..T-26)
+  - Foundation: T-00 scaffold+harness, T-01 in-memory data, T-02 auth (C01, frozen lib/auth)
+  - Challenges: T-03..T-26 (C02..C24 + optimizations lab)
+  - Shared-file freezes: next.config (T-00), lib/auth (T-02), lib/data (T-01), proxy.ts (T-15) → files_forbidden for dependents; nav uses a per-challenge registry (no shared writes)
+  - [ ] Present task list → checkpoint "Shall I proceed with implementation?"
 
 ### v3 revisions folded in (from sprint 1 + 2)
 - Version/model fork resolved at C00 (RECOMMEND: pin Next 16, Cache Components primary, teach legacy four-cache model + migration as "what's in production / interview classic"). USER DECISION at Gate 1.
