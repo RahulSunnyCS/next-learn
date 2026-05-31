@@ -1,0 +1,8 @@
+{
+  "id": 8,
+  "slug": "c07-data-fetching",
+  "title": "Data Fetching Patterns: Memoisation, Waterfalls, and Preloading",
+  "tier": 2,
+  "topics": ["data fetching", "request memoization", "cache()", "waterfall", "parallel"],
+  "status": "not-started"
+}

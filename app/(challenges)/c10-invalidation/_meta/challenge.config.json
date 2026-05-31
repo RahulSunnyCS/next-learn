@@ -1,0 +1,15 @@
+{
+  "id": 11,
+  "slug": "c10-invalidation",
+  "tier": 2,
+  "title": "Cache Invalidation, Dynamic-Rendering Triggers & Footguns",
+  "topics": [
+    "revalidateTag",
+    "revalidatePath",
+    "invalidation",
+    "dynamic rendering",
+    "draftMode",
+    "footgun"
+  ],
+  "status": "not-started"
+}

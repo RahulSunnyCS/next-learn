@@ -1,0 +1,8 @@
+{
+  "id": 12,
+  "slug": "c11-server-actions",
+  "title": "Server Actions: Forms That Work Without JavaScript",
+  "tier": 2,
+  "topics": ["Server Actions", "progressive enhancement", "useActionState", "useFormStatus"],
+  "status": "not-started"
+}

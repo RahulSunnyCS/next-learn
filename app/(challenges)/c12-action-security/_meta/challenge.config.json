@@ -1,0 +1,15 @@
+{
+  "id": 13,
+  "slug": "c12-action-security",
+  "tier": 2,
+  "title": "Server Action Security: Break It, Then Harden It",
+  "topics": [
+    "Server Action security",
+    "authorization",
+    "IDOR",
+    "zod",
+    "CSRF",
+    "rate limit"
+  ],
+  "status": "not-started"
+}
