@@ -119,7 +119,12 @@ export function useCrossTabSync(options: CrossTabSyncOptions) {
   }, [channelName, queryClient]);
 
   const queryKeyRef = useRef(queryKey);
-  queryKeyRef.current = queryKey;
+  // Update inside useEffect to satisfy react-hooks/refs — ref updates must not
+  // happen during render. broadcast() is always called from event handlers so
+  // a post-render update is always timely.
+  useEffect(() => {
+    queryKeyRef.current = queryKey;
+  });
 
   const broadcast = () => {
     const msg: SyncMessage = {

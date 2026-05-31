@@ -16,6 +16,10 @@
 // challenge is about cache mechanics, not auth — and the task has no risk_flags.
 
 import { revalidateTag } from "next/cache";
+// savedItemsTag lives in a separate non-"use server" module because in a
+// "use server" file every export must be an async function (they become
+// Server Actions). A synchronous string helper cannot be co-located here.
+import { savedItemsTag } from "./tags";
 
 // ── In-process saved-items store ─────────────────────────────────────────────
 //
@@ -31,14 +35,6 @@ const DEMO_USER_ID = "demo-user";
 const savedItemsStore = new Map<string, Set<string>>([
   [DEMO_USER_ID, new Set(["item-alpha", "item-beta"])],
 ]);
-
-// ── Cache tag ─────────────────────────────────────────────────────────────────
-// This tag is what ties the Server Action to the 'use cache' boundary in page.tsx.
-// When we call revalidateTag(savedItemsTag(userId)), Next.js marks the 'use cache'
-// entry tagged with that string as stale and re-executes it on the next RSC render.
-export function savedItemsTag(userId: string): string {
-  return `saved-items:${userId}`;
-}
 
 // ── Data accessors (server-only) ─────────────────────────────────────────────
 

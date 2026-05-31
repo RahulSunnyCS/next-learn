@@ -186,7 +186,7 @@ export default function InfiniteList() {
       <div className="rounded-lg bg-amber-50 border border-amber-100 p-3 text-xs text-amber-700 space-y-1">
         <p className="font-medium">What is happening:</p>
         <ul className="list-disc list-inside space-y-0.5">
-          <li>Each page is a separate cache entry under <code>["c14-products"]</code>.</li>
+          <li>Each page is a separate cache entry under <code>[&quot;c14-products&quot;]</code>.</li>
           <li>Scrolling down triggers <code>fetchNextPage()</code> via IntersectionObserver.</li>
           <li>Items never duplicate — pages are appended, not replaced.</li>
           <li>Page 1 was server-prefetched: no loading spinner on first paint.</li>

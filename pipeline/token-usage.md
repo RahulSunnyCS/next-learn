@@ -27,3 +27,10 @@
 | Phase 3 | T-14 Action security | implementor | sonnet | high | ~98k |
 | Phase 3 | T-15 Route handlers + proxy | implementor | sonnet | high | ~92k |
 | Phase 6 | Batch 2 build-fix cycle | implementor | sonnet | high | ~119k |
+| Phase 3 | T-16 TanStack Query | implementor | sonnet | high | ~93k |
+| Phase 3 | T-17 Cart state | implementor | sonnet | high | ~89k |
+| Phase 3 | T-18 URL state | implementor | sonnet | high | ~79k |
+| Phase 3 | T-19 Form state-machine | implementor | sonnet | high | ~96k |
+| Phase 3 | T-20 Optimistic UI | implementor | sonnet | high | ~92k |
+| Phase 3 | T-21 Two-sources + cross-tab | implementor | sonnet | high | ~87k |
+| Phase 6 | Batch 3 build-fix cycle | implementor | sonnet | high | ~82k |

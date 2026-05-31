@@ -41,7 +41,9 @@
   - [x] Batch 2 (Tier2 — caching+actions core): T-09..T-15 — DONE & GREEN. 7 challenges + 1 fix cycle. Routes: ◐ c07/c08/c10/c12/c13, ○ c09/c11/c10-draft, ƒ edge-geo/search route handlers + Proxy(Middleware). Lint clean; 55 tests pass.
     - c12-action-security: 5-layer hardened action (authn→rate-limit→zod→IDOR ownership→write); insecure toy doesn't write. Looks genuinely secure (Phase-4 audit will confirm).
     - More learnings: proxy.ts must export `proxy` (not `middleware`); `export const runtime` ALSO incompatible w/ cacheComponents (edge selection = deploy-level); need `await connection()` before Math.random()/Date.now() even inside Suspense. (rules doc updated.)
-  - [~] Batch 3 (Tier3 — state mgmt, the ≥5 ask): T-16..T-20 (parallel) → T-21 — RUNNING
+  - [x] Batch 3 (Tier3 — state mgmt, the ≥5 ask): T-16..T-21 — DONE & GREEN. 6 challenges + 1 fix cycle. ◐ c14/c15/c16/c18/c19, ○ c17, ƒ api routes. 46 routes total, lint clean, 55 tests. 5 distinct state challenges (cart+hydration, URL-as-truth, form state-machine, optimistic+rollback, two-sources+cross-tab) + TanStack Query. Fix: moved non-async helper out of a 'use server' file.
+  - [~] Batch 4 (Tier4/5): T-22 deploy, T-23 testing, T-25 OAuth, T-26 normalized-state (parallel) — RUNNING
+  - [ ] Batch 5: T-24 capstone (alone, last)
   - [ ] Batch 4 (Tier4/5): T-22,T-23,T-25,T-26 (parallel)
   - [ ] Batch 5: T-24 capstone (alone, last)
 

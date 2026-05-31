@@ -29,7 +29,9 @@ import { cacheTag, cacheLife } from "next/cache";
 import { connection } from "next/server";
 import LocalQueryProvider from "./_components/QueryProvider";
 import ReconciledList from "./_components/ReconciledList";
-import { getSavedItems, savedItemsTag } from "./_lib/actions";
+import { getSavedItems } from "./_lib/actions";
+// savedItemsTag lives in a separate non-"use server" module — see _lib/tags.ts
+import { savedItemsTag } from "./_lib/tags";
 
 export const metadata: Metadata = {
   title: "C19 — Two Sources of Truth + Cross-Tab Sync",

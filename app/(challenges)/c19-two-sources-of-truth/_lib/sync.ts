@@ -171,8 +171,14 @@ export function useCrossTabSync(options: CrossTabSyncOptions) {
   }, [channelName, queryClient]);
 
   // Stable ref to the latest queryKey so the broadcast closure does not go stale.
+  // Updated inside useEffect rather than during render so ESLint's react-hooks/refs
+  // rule is satisfied. The effect runs after every render where queryKey changes,
+  // which is sufficient because broadcast() is always called from event handlers
+  // (never during the render cycle itself).
   const queryKeyRef = useRef(queryKey);
-  queryKeyRef.current = queryKey;
+  useEffect(() => {
+    queryKeyRef.current = queryKey;
+  });
 
   /**
    * Broadcast an invalidation to all other tabs.
