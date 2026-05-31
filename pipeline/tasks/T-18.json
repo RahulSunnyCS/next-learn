@@ -1,0 +1,47 @@
+{
+  "task_id": "T-18",
+  "title": "C16 URL-as-source-of-truth state",
+  "assigned_to": "implementor",
+  "risk_flags": [],
+  "scope": {
+    "files_to_create": [
+      "app/(challenges)/c16-url-state/_meta/spec.md",
+      "app/(challenges)/c16-url-state/_meta/defend-it.md",
+      "app/(challenges)/c16-url-state/_meta/verification.md",
+      "app/(challenges)/c16-url-state/_meta/challenge.config.ts",
+      "app/(challenges)/c16-url-state/page.tsx",
+      "app/(challenges)/c16-url-state/_components/FilterBar.tsx",
+      "app/(challenges)/c16-url-state/_components/Pagination.tsx",
+      "app/(challenges)/c16-url-state/_lib/search-params.ts",
+      "solutions/c16-url-state/page.tsx",
+      "solutions/c16-url-state/_lib/search-params.ts",
+      "solutions/c16-url-state/NOTES.md"
+    ],
+    "files_to_modify": [],
+    "files_forbidden": [
+      "package.json",
+      "next.config.ts",
+      "tsconfig.json",
+      "tailwind.config.ts",
+      "postcss.config.mjs",
+      "app/layout.tsx",
+      "app/page.tsx",
+      "app/globals.css",
+      "lib/data/**",
+      "lib/auth/**",
+      "lib/registry.ts",
+      "proxy.ts",
+      "all app/(challenges)/* directories not belonging to this task",
+      "solutions/** except solutions/c16-url-state/**"
+    ]
+  },
+  "acceptance_criteria": [
+    "Filters, sort, and pagination are encoded entirely in searchParams (no client store), and the server component reads searchParams to render the filtered result set (awaited per Next.js 16).",
+    "A URL with applied filters is shareable/restorable: opening it directly in a new tab reproduces the same filtered state and the filter UI reflects the URL parameters (QA functional: URL-as-state filters are shareable and restorable from a direct URL load).",
+    "Filter updates are debounced before being written to the URL so rapid input does not spam navigation/history.",
+    "NOTES.md explains why URL-as-state is chosen here over a client store and the tradeoffs (shareability/SSR-readability vs URL verbosity).",
+    "The c16 _meta folder contains spec.md (non-empty acceptance criteria), defend-it.md (3-5 from-memory questions with model answers), verification.md, and a discoverable challenge.config.ts; data is read via local _lib over lib/data without editing lib/data."
+  ],
+  "dependencies": ["T-00", "T-01"],
+  "output_format": "code plus plain English explanation of every non-obvious decision"
+}

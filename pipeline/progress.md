@@ -26,11 +26,19 @@
 - **D3 = theme delegated → orchestrator chose "Nextmart" (storefront + seller dashboard).**
 - **D4 = in-memory mock data** (no DB). MITIGATION: thin async repo layer over in-memory stores w/ seeded fixtures + simulated latency; some reads via Route Handlers so fetch-cache is demonstrable; 'use cache'/unstable_cache/ISR wrap the repo. OAuth (C23) uses Auth.js JWT strategy (no DB) — compatible; needs a free OAuth app or a no-setup Credentials fallback.
 
-- [ ] Phase 2 — Decomposition (IN PROGRESS — 27 task contracts: T-00..T-26)
-  - Foundation: T-00 scaffold+harness, T-01 in-memory data, T-02 auth (C01, frozen lib/auth)
-  - Challenges: T-03..T-26 (C02..C24 + optimizations lab)
-  - Shared-file freezes: next.config (T-00), lib/auth (T-02), lib/data (T-01), proxy.ts (T-15) → files_forbidden for dependents; nav uses a per-challenge registry (no shared writes)
-  - [ ] Present task list → checkpoint "Shall I proceed with implementation?"
+- [x] Phase 2 — Decomposition DONE — 27 contracts (T-00..T-26) + BUILD-ORDER.md
+  - Independence verified: each challenge writes only app/(challenges)/cNN-*/** + solutions/cNN-*/**; proxy.ts sole owner T-15; shared shell sole writer T-24 (last, alone); nav auto-discovers via registry
+  - Checkpoint AUTO-APPROVED (user autonomy grant) → proceeding to Phase 3
+  - ARCH DECISION: main app runs cacheComponents ON (D1 current-model primary). Legacy four-cache (T-11) taught as self-contained variant/comparison, NOT by toggling app-wide defaults. output:'export' (T-22) via alternate config variant only.
+
+- [ ] Phase 3 — Implementation (batched per BUILD-ORDER; commit+push after each batch)
+  - [ ] Batch F1: T-00 scaffold (alone) — validate build/typecheck/lint before fan-out
+  - [ ] Batch F2: T-01 data + T-02 auth (parallel)
+  - [ ] Batch 1 (Tier1): T-03..T-08 (parallel)
+  - [ ] Batch 2 (Tier2): T-09..T-15 (parallel)
+  - [ ] Batch 3 (Tier3): T-16..T-20 (parallel) → T-21
+  - [ ] Batch 4 (Tier4/5): T-22,T-23,T-25,T-26 (parallel)
+  - [ ] Batch 5: T-24 capstone (alone, last)
 
 ### v3 revisions folded in (from sprint 1 + 2)
 - Version/model fork resolved at C00 (RECOMMEND: pin Next 16, Cache Components primary, teach legacy four-cache model + migration as "what's in production / interview classic"). USER DECISION at Gate 1.

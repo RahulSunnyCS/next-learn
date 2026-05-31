@@ -1,0 +1,49 @@
+{
+  "task_id": "T-14",
+  "title": "C12 Server Action SECURITY (break then harden)",
+  "assigned_to": "implementor",
+  "risk_flags": ["auth", "public-api"],
+  "scope": {
+    "files_to_create": [
+      "app/(challenges)/c12-action-security/_meta/spec.md",
+      "app/(challenges)/c12-action-security/_meta/defend-it.md",
+      "app/(challenges)/c12-action-security/_meta/verification.md",
+      "app/(challenges)/c12-action-security/_meta/challenge.config.ts",
+      "app/(challenges)/c12-action-security/page.tsx",
+      "app/(challenges)/c12-action-security/_components/EditReviewForm.tsx",
+      "app/(challenges)/c12-action-security/_lib/schema.ts",
+      "app/(challenges)/c12-action-security/_lib/actions.ts",
+      "solutions/c12-action-security/insecure/actions.ts",
+      "solutions/c12-action-security/insecure/README.md",
+      "solutions/c12-action-security/secure/actions.ts",
+      "solutions/c12-action-security/secure/README.md",
+      "solutions/c12-action-security/NOTES.md"
+    ],
+    "files_to_modify": [],
+    "files_forbidden": [
+      "package.json",
+      "next.config.ts",
+      "tsconfig.json",
+      "tailwind.config.ts",
+      "postcss.config.mjs",
+      "app/layout.tsx",
+      "app/page.tsx",
+      "app/globals.css",
+      "lib/data/**",
+      "lib/auth/**",
+      "lib/registry.ts",
+      "proxy.ts",
+      "all app/(challenges)/* directories not belonging to this task",
+      "solutions/** except solutions/c12-action-security/**"
+    ]
+  },
+  "acceptance_criteria": [
+    "The hardened (secure) action rejects an unauthenticated mutation invoked by a raw POST that bypasses the UI, AND rejects a mutation by an authenticated user who does not own the target review; in both cases the backing store is NOT mutated (QA critical: the C12 Server Action reference solution rejects an unauthorized mutation).",
+    "The secure action performs auth via the FROZEN lib/auth getSession, then an authorization check (can THIS user edit THIS review?), then zod schema validation of inputs before any write — in that order.",
+    "NOTES.md explains Next.js' built-in Server Action origin/CSRF protection vs app-level checks, and documents a rate-limit concept; it makes clear that origin protection alone is NOT authorization.",
+    "solutions/c12-action-security/insecure/ ships a deliberately insecure action (no auth/authorization) with a README showing how to exploit it (forge request / reuse-or-tamper session); the insecure code lives only under solutions/ and is never imported by the live app (QA: reference solutions stored separately).",
+    "The c12 _meta folder contains spec.md (non-empty acceptance criteria), defend-it.md (3-5 from-memory questions with model answers), verification.md, and a discoverable challenge.config.ts; auth is consumed via the frozen interface only and lib/auth is not edited."
+  ],
+  "dependencies": ["T-00", "T-01", "T-02"],
+  "output_format": "code plus plain English explanation of every non-obvious decision"
+}

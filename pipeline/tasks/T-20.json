@@ -1,0 +1,46 @@
+{
+  "task_id": "T-20",
+  "title": "C18 Optimistic UI (graded on rollback/failure path)",
+  "assigned_to": "implementor",
+  "risk_flags": [],
+  "scope": {
+    "files_to_create": [
+      "app/(challenges)/c18-optimistic-ui/_meta/spec.md",
+      "app/(challenges)/c18-optimistic-ui/_meta/defend-it.md",
+      "app/(challenges)/c18-optimistic-ui/_meta/verification.md",
+      "app/(challenges)/c18-optimistic-ui/_meta/challenge.config.ts",
+      "app/(challenges)/c18-optimistic-ui/page.tsx",
+      "app/(challenges)/c18-optimistic-ui/_components/ReviewLikes.tsx",
+      "app/(challenges)/c18-optimistic-ui/_lib/actions.ts",
+      "solutions/c18-optimistic-ui/page.tsx",
+      "solutions/c18-optimistic-ui/_components/ReviewLikes.tsx",
+      "solutions/c18-optimistic-ui/NOTES.md"
+    ],
+    "files_to_modify": [],
+    "files_forbidden": [
+      "package.json",
+      "next.config.ts",
+      "tsconfig.json",
+      "tailwind.config.ts",
+      "postcss.config.mjs",
+      "app/layout.tsx",
+      "app/page.tsx",
+      "app/globals.css",
+      "lib/data/**",
+      "lib/auth/**",
+      "lib/registry.ts",
+      "proxy.ts",
+      "all app/(challenges)/* directories not belonging to this task",
+      "solutions/** except solutions/c18-optimistic-ui/**"
+    ]
+  },
+  "acceptance_criteria": [
+    "useOptimistic drives an immediate UI update for reviews/likes before the server responds (optimistic state visible instantly).",
+    "On a forced server rejection the UI rolls back to the pre-action state and shows an error message — no phantom update remains and no React/hydration error is thrown (QA functional: optimistic UI rolls back correctly when the server rejects the mutation).",
+    "After a successful mutation the optimistic value reconciles with the revalidated server data (the displayed value matches the server's authoritative count, not a drifted optimistic guess).",
+    "NOTES.md documents the failure/rollback path and the reconciliation-with-revalidated-data behaviour as the graded focus.",
+    "The c18 _meta folder contains spec.md (non-empty acceptance criteria), defend-it.md (3-5 from-memory questions with model answers), verification.md, and a discoverable challenge.config.ts; mutations may auth via the frozen lib/auth interface but must not edit lib/auth or lib/data."
+  ],
+  "dependencies": ["T-00", "T-01", "T-02"],
+  "output_format": "code plus plain English explanation of every non-obvious decision"
+}

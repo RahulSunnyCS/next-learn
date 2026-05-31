@@ -1,0 +1,46 @@
+{
+  "task_id": "T-11",
+  "title": "C09 Legacy four-cache model + migration",
+  "assigned_to": "implementor",
+  "risk_flags": [],
+  "scope": {
+    "files_to_create": [
+      "app/(challenges)/c09-legacy-caches/_meta/spec.md",
+      "app/(challenges)/c09-legacy-caches/_meta/defend-it.md",
+      "app/(challenges)/c09-legacy-caches/_meta/verification.md",
+      "app/(challenges)/c09-legacy-caches/_meta/challenge.config.ts",
+      "app/(challenges)/c09-legacy-caches/page.tsx",
+      "app/(challenges)/c09-legacy-caches/_lib/legacy.ts",
+      "solutions/c09-legacy-caches/legacy/page.tsx",
+      "solutions/c09-legacy-caches/migrated/page.tsx",
+      "solutions/c09-legacy-caches/cache-flow.md",
+      "solutions/c09-legacy-caches/migration-notes.md"
+    ],
+    "files_to_modify": [],
+    "files_forbidden": [
+      "package.json",
+      "next.config.ts",
+      "tsconfig.json",
+      "tailwind.config.ts",
+      "postcss.config.mjs",
+      "app/layout.tsx",
+      "app/page.tsx",
+      "app/globals.css",
+      "lib/data/**",
+      "lib/auth/**",
+      "lib/registry.ts",
+      "proxy.ts",
+      "all app/(challenges)/* directories not belonging to this task",
+      "solutions/** except solutions/c09-legacy-caches/**"
+    ]
+  },
+  "acceptance_criteria": [
+    "migration-notes.md explains all four legacy caches (Request Memoization, Data Cache, Full Route Cache, Router Cache), unstable_cache, and implicit fetch caching, plus WHY the model changed in Next.js 16 — with version-dated, accurate statements (QA trigger: correctness of version-specific caching facts).",
+    "A legacy variant (v15-style fetch cache options and/or unstable_cache) and a migrated 'use cache' variant of the same feature both compile and produce their documented cache behaviour (QA functional: C09 produces both a working pre-v16 variant and a working v16 variant).",
+    "The migrated variant reproduces the same observable user-facing behaviour as the legacy one, with the before/after diff explained in migration-notes.md.",
+    "cache-flow.md contains the committed cache-flow diagram comparing the legacy four-cache flow with the 'use cache' flow.",
+    "The c09 _meta folder contains spec.md (non-empty acceptance criteria), defend-it.md (3-5 from-memory questions with model answers + cache-flow diagram), verification.md, and a discoverable challenge.config.ts; data is read via a local _lib helper over lib/data without editing lib/data."
+  ],
+  "dependencies": ["T-00", "T-01"],
+  "output_format": "code plus plain English explanation of every non-obvious decision"
+}

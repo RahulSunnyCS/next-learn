@@ -1,0 +1,48 @@
+{
+  "task_id": "T-16",
+  "title": "C14 TanStack Query",
+  "assigned_to": "implementor",
+  "risk_flags": [],
+  "scope": {
+    "files_to_create": [
+      "app/(challenges)/c14-tanstack-query/_meta/spec.md",
+      "app/(challenges)/c14-tanstack-query/_meta/defend-it.md",
+      "app/(challenges)/c14-tanstack-query/_meta/verification.md",
+      "app/(challenges)/c14-tanstack-query/_meta/challenge.config.ts",
+      "app/(challenges)/c14-tanstack-query/page.tsx",
+      "app/(challenges)/c14-tanstack-query/_components/QueryProvider.tsx",
+      "app/(challenges)/c14-tanstack-query/_components/SearchAsYouType.tsx",
+      "app/(challenges)/c14-tanstack-query/_components/InfiniteList.tsx",
+      "app/(challenges)/c14-tanstack-query/_lib/search-route.ts",
+      "solutions/c14-tanstack-query/page.tsx",
+      "solutions/c14-tanstack-query/_components/SearchAsYouType.tsx",
+      "solutions/c14-tanstack-query/NOTES.md"
+    ],
+    "files_to_modify": [],
+    "files_forbidden": [
+      "package.json",
+      "next.config.ts",
+      "tsconfig.json",
+      "tailwind.config.ts",
+      "postcss.config.mjs",
+      "app/layout.tsx",
+      "app/page.tsx",
+      "app/globals.css",
+      "lib/data/**",
+      "lib/auth/**",
+      "lib/registry.ts",
+      "proxy.ts",
+      "all app/(challenges)/* directories not belonging to this task",
+      "solutions/** except solutions/c14-tanstack-query/**"
+    ]
+  },
+  "acceptance_criteria": [
+    "Search-as-you-type uses TanStack Query with request dedup and caching (keystrokes share/cancel in-flight queries; repeated queries hit cache) against a search Route Handler.",
+    "An infinite-scroll list uses useInfiniteQuery to page results and loads further pages on scroll without duplicating already-loaded items.",
+    "A server-prefetched query is dehydrated and passed through a HydrationBoundary so the first paint matches the client with no hydration mismatch warnings in the console (QA functional: TanStack Query hydration boundary produces no client/server mismatch errors).",
+    "NOTES.md documents when to choose TanStack Query vs an RSC server fetch vs 'use cache', with concrete criteria.",
+    "The c14 _meta folder contains spec.md (non-empty acceptance criteria), defend-it.md (3-5 from-memory questions with model answers), verification.md, and a discoverable challenge.config.ts; the QueryProvider is local to this challenge and the root layout is not edited; data is read via local _lib without editing lib/data."
+  ],
+  "dependencies": ["T-00", "T-01"],
+  "output_format": "code plus plain English explanation of every non-obvious decision"
+}

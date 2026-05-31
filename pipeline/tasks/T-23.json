@@ -1,0 +1,47 @@
+{
+  "task_id": "T-23",
+  "title": "C21 Testing (RSC + Server Action + Route Handler + E2E)",
+  "assigned_to": "implementor",
+  "risk_flags": [],
+  "scope": {
+    "files_to_create": [
+      "app/(challenges)/c21-testing/_meta/spec.md",
+      "app/(challenges)/c21-testing/_meta/defend-it.md",
+      "app/(challenges)/c21-testing/_meta/verification.md",
+      "app/(challenges)/c21-testing/_meta/challenge.config.ts",
+      "app/(challenges)/c21-testing/page.tsx",
+      "solutions/c21-testing/rsc.test.tsx",
+      "solutions/c21-testing/server-action.test.ts",
+      "solutions/c21-testing/route-handler.test.ts",
+      "solutions/c21-testing/e2e/key-flow.spec.ts",
+      "solutions/c21-testing/testing-the-boundary.md",
+      "solutions/c21-testing/NOTES.md"
+    ],
+    "files_to_modify": [],
+    "files_forbidden": [
+      "package.json",
+      "next.config.ts",
+      "tsconfig.json",
+      "tailwind.config.ts",
+      "postcss.config.mjs",
+      "app/layout.tsx",
+      "app/page.tsx",
+      "app/globals.css",
+      "lib/data/**",
+      "lib/auth/**",
+      "lib/registry.ts",
+      "proxy.ts",
+      "all app/(challenges)/* directories not belonging to this task",
+      "solutions/** except solutions/c21-testing/** (T-04/T-13/T-15 solutions are READ-ONLY context)"
+    ]
+  },
+  "acceptance_criteria": [
+    "A unit/integration test exercises the C03 product RSC (T-04) in isolation and asserts its output, and the test passes (QA functional: the RSC representative solution includes a passing test that exercises the server component in isolation). The C03 solution is read for context only and never modified.",
+    "A test invokes the C11 Server Action (T-13) directly and asserts its return value and side effect, and it passes (QA functional: the Server Action representative solution includes a passing test that invokes the action).",
+    "A test exercises the C13 search Route Handler (T-15) via a simulated request and asserts the response, and it passes (QA functional: the Route Handler representative solution includes a passing test that exercises the handler).",
+    "A Playwright E2E covers one key flow (e.g. listing -> product -> add to cart) and is tagged so the Automation Gate can classify it; testing-the-boundary.md documents how to test across the server/client boundary.",
+    "The c21 _meta folder contains spec.md (non-empty acceptance criteria), defend-it.md (3-5 from-memory questions with model answers), verification.md, and a discoverable challenge.config.ts. NOTE (independence): the three target solutions are READ-ONLY inputs — this task adds only its own tests under solutions/c21-testing/ and must not edit those challenges' files."
+  ],
+  "dependencies": ["T-00", "T-01", "T-04", "T-13", "T-15"],
+  "output_format": "code plus plain English explanation of every non-obvious decision"
+}

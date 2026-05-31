@@ -1,0 +1,49 @@
+{
+  "task_id": "T-26",
+  "title": "C24 Large-scale normalized state (seller data-grid)",
+  "assigned_to": "implementor",
+  "risk_flags": [],
+  "scope": {
+    "files_to_create": [
+      "app/(challenges)/c24-normalized-state/_meta/spec.md",
+      "app/(challenges)/c24-normalized-state/_meta/defend-it.md",
+      "app/(challenges)/c24-normalized-state/_meta/verification.md",
+      "app/(challenges)/c24-normalized-state/_meta/challenge.config.ts",
+      "app/(challenges)/c24-normalized-state/page.tsx",
+      "app/(challenges)/c24-normalized-state/_components/DataGrid.tsx",
+      "app/(challenges)/c24-normalized-state/_components/Row.tsx",
+      "app/(challenges)/c24-normalized-state/_lib/normalize.ts",
+      "app/(challenges)/c24-normalized-state/_lib/selectors.ts",
+      "app/(challenges)/c24-normalized-state/_lib/store.ts",
+      "solutions/c24-normalized-state/page.tsx",
+      "solutions/c24-normalized-state/_lib/selectors.ts",
+      "solutions/c24-normalized-state/NOTES.md"
+    ],
+    "files_to_modify": [],
+    "files_forbidden": [
+      "package.json",
+      "next.config.ts",
+      "tsconfig.json",
+      "tailwind.config.ts",
+      "postcss.config.mjs",
+      "app/layout.tsx",
+      "app/page.tsx",
+      "app/globals.css",
+      "lib/data/**",
+      "lib/auth/**",
+      "lib/registry.ts",
+      "proxy.ts",
+      "all app/(challenges)/* directories not belonging to this task",
+      "solutions/** except solutions/c24-normalized-state/**"
+    ]
+  },
+  "acceptance_criteria": [
+    "Seller grid entities are stored in a normalized shape (by-id map plus id array) rather than nested arrays, and normalize.ts converts the repository's seeded data into that shape.",
+    "Memoized selectors derive view data so that updating one row does not recompute unrelated derived state (selector memoization demonstrated/asserted).",
+    "The grid virtualizes rows so only visible rows are rendered for a large dataset, and editing/selecting a single row does NOT trigger a re-render storm across all rows (documented via render-count instrumentation in NOTES.md).",
+    "NOTES.md explains the normalization + memoized-selector + virtualization strategy and which re-render pitfalls each one prevents.",
+    "The c24 _meta folder contains spec.md (non-empty acceptance criteria), defend-it.md (3-5 from-memory questions with model answers), verification.md, and a discoverable challenge.config.ts; seed data is read via local _lib over lib/data without editing lib/data."
+  ],
+  "dependencies": ["T-00", "T-01"],
+  "output_format": "code plus plain English explanation of every non-obvious decision"
+}

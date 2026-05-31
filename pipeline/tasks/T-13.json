@@ -1,0 +1,48 @@
+{
+  "task_id": "T-13",
+  "title": "C11 Server Actions (progressive enhancement)",
+  "assigned_to": "implementor",
+  "risk_flags": ["public-api"],
+  "scope": {
+    "files_to_create": [
+      "app/(challenges)/c11-server-actions/_meta/spec.md",
+      "app/(challenges)/c11-server-actions/_meta/defend-it.md",
+      "app/(challenges)/c11-server-actions/_meta/verification.md",
+      "app/(challenges)/c11-server-actions/_meta/challenge.config.ts",
+      "app/(challenges)/c11-server-actions/page.tsx",
+      "app/(challenges)/c11-server-actions/_components/ReviewForm.tsx",
+      "app/(challenges)/c11-server-actions/_components/SubmitButton.tsx",
+      "app/(challenges)/c11-server-actions/_lib/actions.ts",
+      "solutions/c11-server-actions/page.tsx",
+      "solutions/c11-server-actions/_components/ReviewForm.tsx",
+      "solutions/c11-server-actions/_lib/actions.ts",
+      "solutions/c11-server-actions/NOTES.md"
+    ],
+    "files_to_modify": [],
+    "files_forbidden": [
+      "package.json",
+      "next.config.ts",
+      "tsconfig.json",
+      "tailwind.config.ts",
+      "postcss.config.mjs",
+      "app/layout.tsx",
+      "app/page.tsx",
+      "app/globals.css",
+      "lib/data/**",
+      "lib/auth/**",
+      "lib/registry.ts",
+      "proxy.ts",
+      "all app/(challenges)/* directories not belonging to this task",
+      "solutions/** except solutions/c11-server-actions/**"
+    ]
+  },
+  "acceptance_criteria": [
+    "The review form submits via a Server Action and works with JavaScript disabled (progressive enhancement): the form posts and the mutation applies even without client JS (documented test in NOTES.md).",
+    "useActionState surfaces server-side validation errors back into the form, and useFormStatus drives a pending state on the submit button.",
+    "On a successful mutation the action revalidates the affected cache (revalidateTag/revalidatePath) so the new review appears on reload.",
+    "NOTES.md documents when to prefer a Server Action over a Route Handler (and vice versa), and the action validates its input server-side (not relying on client validation).",
+    "The c11 _meta folder contains spec.md (non-empty acceptance criteria), defend-it.md (3-5 from-memory questions with model answers), verification.md, and a discoverable challenge.config.ts; data is read/written via a local _lib helper over lib/data without editing lib/data. NOTE: security hardening (auth + ownership) is intentionally deferred to C12 (T-14) — this challenge teaches the happy-path mechanics."
+  ],
+  "dependencies": ["T-00", "T-01"],
+  "output_format": "code plus plain English explanation of every non-obvious decision"
+}

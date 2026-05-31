@@ -1,8 +1,8 @@
 # TODO — Next.js 16 Learning Curriculum ("Nextmart")
 
 > Single-writer mirror of the plan (orchestrator-maintained). Source of truth: `pipeline/`.
-> **Status: HUMAN GATE 1 APPROVED. Track = Deep (~24), theme = Nextmart, data = in-memory. Next: Phase 2 decomposition.**
-> Nothing below is built yet.
+> **Status: Phase 2 done (27 contracts). Phase 3 IMPLEMENTATION in progress — all gates auto-approved by user; building batch-by-batch.**
+> Contracts: `pipeline/tasks/T-00..T-26.json` · order: `pipeline/tasks/BUILD-ORDER.md`. Challenge CNN ↔ task: C01=T-02, C02=T-03 … C24=T-26 (offset by the 2 foundation tasks + the lab).
 
 ## Pipeline state
 - [x] Phase 0 — Triage (MEDIUM · feature-full · 2 sprints)

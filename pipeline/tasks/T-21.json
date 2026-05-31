@@ -1,0 +1,49 @@
+{
+  "task_id": "T-21",
+  "title": "C19 Two-sources-of-truth + cross-tab sync (FLAGSHIP)",
+  "assigned_to": "implementor",
+  "risk_flags": [],
+  "scope": {
+    "files_to_create": [
+      "app/(challenges)/c19-two-sources-of-truth/_meta/spec.md",
+      "app/(challenges)/c19-two-sources-of-truth/_meta/defend-it.md",
+      "app/(challenges)/c19-two-sources-of-truth/_meta/verification.md",
+      "app/(challenges)/c19-two-sources-of-truth/_meta/challenge.config.ts",
+      "app/(challenges)/c19-two-sources-of-truth/page.tsx",
+      "app/(challenges)/c19-two-sources-of-truth/_components/QueryProvider.tsx",
+      "app/(challenges)/c19-two-sources-of-truth/_components/ReconciledList.tsx",
+      "app/(challenges)/c19-two-sources-of-truth/_lib/sync.ts",
+      "app/(challenges)/c19-two-sources-of-truth/_lib/actions.ts",
+      "solutions/c19-two-sources-of-truth/page.tsx",
+      "solutions/c19-two-sources-of-truth/_lib/sync.ts",
+      "solutions/c19-two-sources-of-truth/cache-flow.md",
+      "solutions/c19-two-sources-of-truth/NOTES.md"
+    ],
+    "files_to_modify": [],
+    "files_forbidden": [
+      "package.json",
+      "next.config.ts",
+      "tsconfig.json",
+      "tailwind.config.ts",
+      "postcss.config.mjs",
+      "app/layout.tsx",
+      "app/page.tsx",
+      "app/globals.css",
+      "lib/data/**",
+      "lib/auth/**",
+      "lib/registry.ts",
+      "proxy.ts",
+      "all app/(challenges)/* directories not belonging to this task",
+      "solutions/** except solutions/c19-two-sources-of-truth/**"
+    ]
+  },
+  "acceptance_criteria": [
+    "The challenge deliberately creates a disagreement between the TanStack client cache and the RSC / 'use cache' server cache (e.g. a mutation revalidates the server cache while the client cache still holds the old value) and makes the divergence visible.",
+    "A documented reconciliation strategy resolves the divergence (e.g. invalidate the TanStack query on server revalidation / refetch-on-focus) so both sources converge to the same value, with the chosen strategy justified in NOTES.md.",
+    "Cross-tab sync via BroadcastChannel (or storage events) propagates a mutation in one tab to a second open tab so both tabs converge without a manual reload.",
+    "cache-flow.md contains the committed cache-flow diagram showing both caches, where they diverge, and where reconciliation/sync occurs.",
+    "The c19 _meta folder contains spec.md (non-empty acceptance criteria), defend-it.md (3-5 from-memory questions with model answers + the cache-flow diagram), verification.md, and a discoverable challenge.config.ts; the QueryProvider is local to this challenge and neither lib/data nor the root layout is edited."
+  ],
+  "dependencies": ["T-00", "T-01", "T-16"],
+  "output_format": "code plus plain English explanation of every non-obvious decision"
+}
