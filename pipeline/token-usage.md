@@ -8,4 +8,5 @@
 | Phase 1 | Next.js v16 fact-check | orchestrator | (web) | low | ~4k |
 | Phase 1 | QA Planner | qa-planner | sonnet | medium | ~34k |
 | Phase 1 | Translator (Plan Report) | translator | haiku | medium | ~12k |
-| Phase 2 | Decomposition (27 contracts) | orchestrator+general | opus | high | ~45k |
+| Phase 2 | Decomposition (27 contracts) | general-purpose | opus | high | ~102k |
+| Phase 3 | T-00 Scaffold & harness | implementor | sonnet | high | ~89k |

@@ -1,0 +1,26 @@
+/* Tailwind 4 CSS-first setup: @import replaces the old @tailwind directives.
+   The single @import statement brings in preflight (reset) + all utility
+   classes.  Custom design tokens and theme overrides go inside @theme blocks
+   further in this file if needed.                                           */
+@import "tailwindcss";
+
+/* ─── Global base overrides ─────────────────────────────────────────────── */
+@layer base {
+  :root {
+    --foreground: oklch(0.15 0 0);
+    --background: oklch(0.98 0 0);
+    --accent: oklch(0.55 0.2 250);
+  }
+
+  body {
+    color: var(--foreground);
+    background: var(--background);
+    font-family: system-ui, sans-serif;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-line: underline;
+    text-underline-offset: 3px;
+  }
+}

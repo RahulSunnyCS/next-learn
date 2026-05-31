@@ -32,8 +32,8 @@
   - ARCH DECISION: main app runs cacheComponents ON (D1 current-model primary). Legacy four-cache (T-11) taught as self-contained variant/comparison, NOT by toggling app-wide defaults. output:'export' (T-22) via alternate config variant only.
 
 - [ ] Phase 3 — Implementation (batched per BUILD-ORDER; commit+push after each batch)
-  - [ ] Batch F1: T-00 scaffold (alone) — validate build/typecheck/lint before fan-out
-  - [ ] Batch F2: T-01 data + T-02 auth (parallel)
+  - [x] Batch F1: T-00 scaffold — DONE. Next 16.2.6 pinned, cacheComponents:true (top-level), Tailwind 4, ESLint flat (next lint removed in 16). Build/typecheck/lint pass (verified independently). NOTE: registry discovers challenge.config.JSON (Turbopack can't dynamic-require .ts) + typed .ts re-export — ALL challenges must add challenge.config.json.
+  - [~] Batch F2: T-01 data + T-02 auth (parallel) — RUNNING
   - [ ] Batch 1 (Tier1): T-03..T-08 (parallel)
   - [ ] Batch 2 (Tier2): T-09..T-15 (parallel)
   - [ ] Batch 3 (Tier3): T-16..T-20 (parallel) → T-21
