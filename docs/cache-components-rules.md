@@ -14,8 +14,13 @@ app-wide. Every challenge page MUST follow these rules or `next build` fails.
    `export const fetchCache` are ALL **incompatible** with `cacheComponents` and
    fail the build. Under Cache Components, **dynamic is the default** and
    `dynamicParams` is effectively `true` (unknown params render on demand); you
-   opt INTO caching with `'use cache'`, never out with a directive. (`export const
-   runtime = 'edge'` IS allowed — it selects a runtime, it isn't dynamic control.)
+   opt INTO caching with `'use cache'`, never out with a directive.
+   **`export const runtime = 'edge'` is ALSO incompatible** with cacheComponents
+   and fails the build ("Route segment config 'runtime' is not compatible") — even
+   on Route Handlers. Per-route runtime selection is therefore a DEPLOYMENT-level
+   concern under Cache Components (see the deployment challenge); teach Edge
+   concepts (Web-API-only surface, geolocation headers, cold starts) without the
+   `runtime` export, and note this incompatibility as a real v16 gotcha.
 
 2. **Read uncached/dynamic data only INSIDE a `<Suspense>` boundary.**
    Accessing dynamic data at a route's top level (outside Suspense) fails the build
