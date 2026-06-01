@@ -34,3 +34,8 @@
 | Phase 3 | T-20 Optimistic UI | implementor | sonnet | high | ~92k |
 | Phase 3 | T-21 Two-sources + cross-tab | implementor | sonnet | high | ~87k |
 | Phase 6 | Batch 3 build-fix cycle | implementor | sonnet | high | ~82k |
+| Phase 3 | T-22 Deployment (interrupted+completion) | implementor | sonnet | high | ~65k |
+| Phase 3 | T-23 Testing (interrupted+completion) | implementor | sonnet | high | ~78k |
+| Phase 3 | T-25 OAuth Auth.js (interrupted+completion) | implementor | sonnet | high | ~70k |
+| Phase 3 | T-26 Normalized state (interrupted+completion) | implementor | sonnet | high | ~80k |
+| Phase 6 | Batch 4 fix cycle (verify, no-op) | implementor | sonnet | medium | ~37k |

@@ -42,8 +42,8 @@
     - c12-action-security: 5-layer hardened action (authn→rate-limit→zod→IDOR ownership→write); insecure toy doesn't write. Looks genuinely secure (Phase-4 audit will confirm).
     - More learnings: proxy.ts must export `proxy` (not `middleware`); `export const runtime` ALSO incompatible w/ cacheComponents (edge selection = deploy-level); need `await connection()` before Math.random()/Date.now() even inside Suspense. (rules doc updated.)
   - [x] Batch 3 (Tier3 — state mgmt, the ≥5 ask): T-16..T-21 — DONE & GREEN. 6 challenges + 1 fix cycle. ◐ c14/c15/c16/c18/c19, ○ c17, ƒ api routes. 46 routes total, lint clean, 55 tests. 5 distinct state challenges (cart+hydration, URL-as-truth, form state-machine, optimistic+rollback, two-sources+cross-tab) + TanStack Query. Fix: moved non-async helper out of a 'use server' file.
-  - [~] Batch 4 (Tier4/5): T-22 deploy, T-23 testing, T-25 OAuth, T-26 normalized-state (parallel) — RUNNING
-  - [ ] Batch 5: T-24 capstone (alone, last)
+  - [x] Batch 4 (Tier4/5): T-22 deploy, T-23 testing, T-25 OAuth, T-26 normalized-state — DONE & GREEN. Interrupted by a session limit mid-run; the partial work already built green, then 4 completion agents filled in missing meta/solutions + 1 fix cycle (no-op, confirmed green). Full verify: build OK, lint 0 errors/1 warning, typecheck exit 0, 104 tests pass (4 files incl. c21 testing suites). c23-oauth = Auth.js JWT (Credentials + GitHub), dev-fallback AUTH_SECRET + trustHost (flag for Phase-4 sec review).
+  - [~] Batch 5: T-24 capstone (alone, last) — RUNNING — polishes shell + README + global error/not-found/loading + sitemap/robots
   - [ ] Batch 4 (Tier4/5): T-22,T-23,T-25,T-26 (parallel)
   - [ ] Batch 5: T-24 capstone (alone, last)
 
