@@ -1,6 +1,11 @@
 # Challenge Spec — Catalog: SSG + ISR with Cache Components
 
 > **File:** `app/(challenges)/c02-catalog-ssg-isr/_meta/spec.md`
+>
+> 📚 **New to these concepts?** Read [`theory.md`](./theory.md) first — it
+> explains *what* `'use cache'`, `cacheLife`, `generateStaticParams`, and
+> `dynamicParams` actually do, *why* they exist, and *how* they help, with
+> links to the official Next.js docs. This spec assumes that background.
 
 ---
 
