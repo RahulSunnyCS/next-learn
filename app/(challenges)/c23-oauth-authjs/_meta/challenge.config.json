@@ -1,0 +1,8 @@
+{
+  "id": 23,
+  "slug": "c23-oauth-authjs",
+  "title": "Real OAuth with Auth.js (next-auth v5)",
+  "tier": 4,
+  "topics": ["OAuth", "Auth.js", "next-auth", "JWT session", "CSRF state", "callbacks"],
+  "status": "not-started"
+}

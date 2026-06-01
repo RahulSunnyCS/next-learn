@@ -1,0 +1,8 @@
+{
+  "id": 22,
+  "slug": "c21-testing",
+  "title": "Testing Next.js: RSC, Server Actions, Route Handlers, and E2E",
+  "tier": 4,
+  "topics": ["testing", "vitest", "Playwright", "RSC testing", "Server Action testing", "E2E"],
+  "status": "not-started"
+}

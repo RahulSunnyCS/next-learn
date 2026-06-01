@@ -1,0 +1,15 @@
+{
+  "id": 24,
+  "slug": "c24-normalized-state",
+  "title": "Large-scale Normalized State: Seller Data Grid",
+  "tier": 4,
+  "topics": [
+    "normalized state",
+    "memoized selectors",
+    "virtualization",
+    "re-render",
+    "data grid",
+    "performance"
+  ],
+  "status": "not-started"
+}
