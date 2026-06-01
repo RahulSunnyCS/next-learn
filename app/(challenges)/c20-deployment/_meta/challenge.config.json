@@ -1,0 +1,17 @@
+{
+  "id": 21,
+  "slug": "c20-deployment",
+  "title": "Deployment & Runtime Model — Where Does Your Code Actually Run?",
+  "tier": 4,
+  "topics": [
+    "deployment",
+    "output export",
+    "standalone",
+    "serverless",
+    "edge",
+    "ISR",
+    "Turbopack",
+    "PPR infrastructure"
+  ],
+  "status": "not-started"
+}

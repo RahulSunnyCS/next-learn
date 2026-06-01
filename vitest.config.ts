@@ -19,7 +19,16 @@ import path from "node:path";
 export default defineConfig({
   test: {
     environment: "node",
-    include: ["lib/**/_tests/*.test.ts", "lib/**/_tests/*.test.tsx"],
+    include: [
+      "lib/**/_tests/*.test.ts",
+      "lib/**/_tests/*.test.tsx",
+      // C21-Testing challenge: unit/integration tests for RSC logic, Server
+      // Actions, and Route Handlers. These live in solutions/c21-testing/ so
+      // the challenge can ship runnable test examples alongside the teaching
+      // content without scattering test files across the challenge directories.
+      "solutions/c21-testing/*.test.ts",
+      "solutions/c21-testing/*.test.tsx",
+    ],
   },
   resolve: {
     alias: {
