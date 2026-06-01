@@ -1,0 +1,8 @@
+{
+  "id": 25,
+  "slug": "c25-capstone",
+  "title": "Capstone: Harden, Polish & Deploy Nextmart",
+  "tier": 5,
+  "topics": ["capstone", "performance", "accessibility", "deployment", "portfolio"],
+  "status": "not-started"
+}
