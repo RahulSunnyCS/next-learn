@@ -62,12 +62,12 @@ const STATUS_BADGE: Record<string, { label: string; classes: string }> = {
 // ─── Sub-components ───────────────────────────────────────────────────────
 
 function ChallengeCard({ challenge }: { challenge: DiscoveredChallenge }) {
-  const { config, routePath } = challenge;
+  const { config, href } = challenge;
   const badge = STATUS_BADGE[config.status] ?? STATUS_BADGE["not-started"];
 
   return (
     <a
-      href={routePath}
+      href={href}
       className="block rounded-lg border border-gray-200 p-4 hover:border-indigo-400 hover:shadow-sm transition-all no-underline bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:rounded-lg"
     >
       <div className="flex items-start justify-between gap-3">
