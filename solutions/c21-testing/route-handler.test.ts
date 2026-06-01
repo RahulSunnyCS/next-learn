@@ -85,7 +85,9 @@ describe("GET /search — HTTP contract", () => {
     // image can be string or null (no images in fixture)
     expect(first.image === null || typeof first.image === "string").toBe(true);
     // sellerId must NOT be exposed (security: internal field)
-    expect((first as Record<string, unknown>).sellerId).toBeUndefined();
+    // Cast via unknown first: SearchResult does not have an index signature,
+    // so a direct cast to Record<string, unknown> would be a TS error.
+    expect((first as unknown as Record<string, unknown>).sellerId).toBeUndefined();
   });
 
   it("returns 200 with filtered results for a matching q param", async () => {
@@ -294,8 +296,10 @@ describe("searchProducts — data access layer", () => {
     expect(typeof r.rating).toBe("number");
     // image is nullable
     expect(r.image === null || typeof r.image === "string").toBe(true);
-    // Internal fields must be absent
-    const rec = r as Record<string, unknown>;
+    // Internal fields must be absent.
+    // Cast via unknown first: SearchResult lacks an index signature, so a
+    // direct cast to Record<string, unknown> is rejected by the TS compiler.
+    const rec = r as unknown as Record<string, unknown>;
     expect(rec.description).toBeUndefined();
     expect(rec.sellerId).toBeUndefined();
     expect(rec.stock).toBeUndefined();
