@@ -45,8 +45,11 @@
   - [x] Batch 4 (Tier4/5): T-22 deploy, T-23 testing, T-25 OAuth, T-26 normalized-state — DONE & GREEN. Interrupted by a session limit mid-run; the partial work already built green, then 4 completion agents filled in missing meta/solutions + 1 fix cycle (no-op, confirmed green). Full verify: build OK, lint 0 errors/1 warning, typecheck exit 0, 104 tests pass (4 files incl. c21 testing suites). c23-oauth = Auth.js JWT (Credentials + GitHub), dev-fallback AUTH_SECRET + trustHost (flag for Phase-4 sec review).
   - [x] Batch 5: T-24 capstone — DONE & GREEN. Shell polished, README, global states, sitemap/robots. 55 routes, lint 0 errors, typecheck exit 0, 104 tests.
   - [x] **PHASE 3 COMPLETE — all 25 challenges (c01..c25) implemented & verified green.**
-- [~] Phase 4 — Specialist Review (security-auditor Opus/max + performance + architecture) → synthesize → Gate 2 (auto-approve unless Critical/High) — RUNNING
-  - Security focus: the 5 security-teaching solutions (c01 lib/auth, c11/c12 actions, c13 proxy/handlers, c23 oauth) + live surface (no committed secrets, insecure-toys not live-reachable, input validation, dev-fallback secrets).
+- [x] Phase 4 — Specialist Review DONE. Security PASS (0/0/0/4); Performance CONDITIONAL PASS (0/0/1/4); Architecture CONDITIONAL PASS (0/2/7). Synthesis: 0 Critical, 0 High, 3 Medium, 15 Low. No conflicts.
+  - [x] **GATE 2 — CONDITIONAL PASS, AUTO-APPROVED** (no Critical/High per autonomy grant). Reports in pipeline/reviews/.
+  - [~] Review fix pass (teaching-integrity conditions: c24 re-render, c11/c18 Promise.all, page.tsx .json, lib/data getReviewById, id-convention + revalidateTag docs, proxy account page, registry JSDoc/turbopackIgnore, playwright comment) — RUNNING
+- [ ] Phase 5/6 — tests exist (104 unit + c21 suites + e2e); run + Automation Gate (test:e2e likely CI-ONLY — needs browsers/dev server)
+- [ ] Phase 7 — Epic doc + Final Summary → Gate 3 (auto) → cleanup (delete pipeline/, preserve learner README/challenge list)
   - [ ] Batch 4 (Tier4/5): T-22,T-23,T-25,T-26 (parallel)
   - [ ] Batch 5: T-24 capstone (alone, last)
 
