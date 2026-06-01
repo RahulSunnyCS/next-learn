@@ -48,8 +48,8 @@
 - [x] Phase 4 — Specialist Review DONE. Security PASS (0/0/0/4); Performance CONDITIONAL PASS (0/0/1/4); Architecture CONDITIONAL PASS (0/2/7). Synthesis: 0 Critical, 0 High, 3 Medium, 15 Low. No conflicts.
   - [x] **GATE 2 — CONDITIONAL PASS, AUTO-APPROVED** (no Critical/High per autonomy grant). Reports in pipeline/reviews/.
   - [~] Review fix pass (teaching-integrity conditions: c24 re-render, c11/c18 Promise.all, page.tsx .json, lib/data getReviewById, id-convention + revalidateTag docs, proxy account page, registry JSDoc/turbopackIgnore, playwright comment) — RUNNING
-- [ ] Phase 5/6 — tests exist (104 unit + c21 suites + e2e); run + Automation Gate (test:e2e likely CI-ONLY — needs browsers/dev server)
-- [ ] Phase 7 — Epic doc + Final Summary → Gate 3 (auto) → cleanup (delete pipeline/, preserve learner README/challenge list)
+- [x] Phase 5/6 — Tests: 104 unit/integration pass (4 files). Automation Gate = CI-ONLY (7 Playwright e2e discovered + tagged, but no browsers in container; non-blocking). See pipeline/reviews/automation-gate.md.
+- [~] Phase 7 — Epic doc (running) → Final Summary → Gate 3 (auto) → cleanup (delete pipeline/, PRESERVE learner README + challenge list)
   - [ ] Batch 4 (Tier4/5): T-22,T-23,T-25,T-26 (parallel)
   - [ ] Batch 5: T-24 capstone (alone, last)
 
