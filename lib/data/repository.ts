@@ -206,6 +206,20 @@ export async function listProductsBySeller(sellerId: string): Promise<Product[]>
 // ---------------------------------------------------------------------------
 
 /**
+ * Returns a single review by its ID, or null if not found.
+ *
+ * Exposed here (instead of leaving callers to import the store directly) so
+ * that Server Actions can perform IDOR-prevention checks through the public
+ * lib/data interface rather than bypassing it with a raw store import.
+ * Using the public accessor keeps the store as an implementation detail and
+ * avoids coupling callers to internal module paths that may change.
+ */
+export async function getReviewById(id: string): Promise<Review | null> {
+  await delay();
+  return reviewStore.get(id) ?? null;
+}
+
+/**
  * Returns all reviews for a product, ordered by most recent first.
  */
 export async function listReviews(productId: string): Promise<Review[]> {

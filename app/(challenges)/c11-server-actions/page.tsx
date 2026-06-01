@@ -96,11 +96,14 @@ export default function C11ServerActionsPage() {
 // It lives inside <Suspense> above so cacheComponents is satisfied.
 
 async function ReviewPanel({ productId }: { productId: string }) {
-  // Product info: cached with 'use cache' (deterministic after the first call).
-  const product = await getCachedProduct(productId);
-
-  // Reviews: cached with 'use cache' + cacheTag so revalidateTag works.
-  const reviews = await getCachedReviews(productId);
+  // Fetch product and reviews in parallel — both are independent cached reads.
+  // On a cold cache miss both can incur the full 30–120ms simulated latency.
+  // Sequential awaits would double the time to first byte; Promise.all halves it.
+  // This matches the pattern c07 teaches (parallel > waterfall for independent reads).
+  const [product, reviews] = await Promise.all([
+    getCachedProduct(productId),
+    getCachedReviews(productId),
+  ]);
 
   if (!product) {
     return (

@@ -113,7 +113,7 @@ function EmptyState() {
         Challenge directories are added by their own task (starting with T-03).
         Once a challenge folder contains{" "}
         <code className="font-mono text-xs bg-gray-100 rounded px-1">
-          _meta/challenge.config.ts
+          _meta/challenge.config.json
         </code>
         , it will appear here automatically.
       </p>
@@ -258,7 +258,7 @@ export default function HomePage() {
           <span className="ml-2 text-xs font-normal text-gray-400">
             — auto-discovered from{" "}
             <code className="font-mono bg-gray-100 rounded px-1">
-              app/(challenges)/*/_meta/challenge.config.ts
+              app/(challenges)/*/_meta/challenge.config.json
             </code>
             . No hand-maintained list.
           </span>

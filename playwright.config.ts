@@ -12,11 +12,12 @@
  *
  * 2. baseURL — localhost:3000 is the Next.js dev server default.
  *
- * 3. testDir — we keep E2E specs in the top-level `e2e/` directory rather
- *    than inside the app directory to keep routing and testing concerns
- *    separate.  The solutions/c21-testing/e2e/ location is an alias kept
- *    for the C21 challenge package (both locations are configured in the
- *    testDir glob).
+ * 3. testDir — E2E specs live in the top-level `./e2e/` directory only.
+ *    Playwright discovers tests from that single location.  The file at
+ *    `solutions/c21-testing/e2e/key-flow.spec.ts` is a re-export shim that
+ *    imports from `./e2e/` — it is not a second test directory.  Do not
+ *    add `solutions/c21-testing/e2e` as a separate testDir; that would cause
+ *    tests to run twice from the same specs.
  *
  * 4. projects — we run only Chromium by default to keep CI fast.  Firefox
  *    and WebKit can be added for cross-browser coverage once the suite is

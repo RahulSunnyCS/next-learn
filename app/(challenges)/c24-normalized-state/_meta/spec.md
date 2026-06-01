@@ -80,31 +80,43 @@ state.rows = state.rows.map(r =>
 // Result: new array reference for every Row subscription → re-render storm
 ```
 
-### After (normalized)
+### After (normalized — flat top-level keys)
 
 ```ts
 // State shape — O(1) to update one item
+// NOTE: byId and allIds are TOP-LEVEL store keys, NOT nested under `rows`.
+// This flatness is critical for the Toolbar zero-wasted-render guarantee (see below).
 type State = {
-  rows: {
-    byId: Record<string, SellerRow>;  // O(1) lookup
-    allIds: string[];                  // preserves iteration order
-  }
+  byId:   Record<string, SellerRow>;  // O(1) lookup
+  allIds: string[];                    // preserves iteration order; NEVER changes on a stock edit
 };
 
 // Update one row: O(1) point update — only this entry changes
-state.rows = {
-  ...state.rows,
-  byId: {
-    ...state.rows.byId,
-    [id]: { ...state.rows.byId[id], stock: newStock }
-  }
+state.byId = {
+  ...state.byId,
+  [id]: { ...state.byId[id], stock: newStock }
 };
 // Result: byId[otherId] references unchanged → Object.is holds → no re-render for others
+// Result: state.allIds reference unchanged → selectRowCount / selectSelectedCount return
+//         the same values → Toolbar does NOT re-render on stock edits (zero wasted renders).
 ```
 
-The spread `{ ...state.rows.byId, [id]: ... }` creates a new outer object, so the store knows
+The spread `{ ...state.byId, [id]: ... }` creates a new outer `byId` object, so the store knows
 something changed. But `byId[otherId]` still points to the same memory address as before — no
 copy was made. This is the key insight: **only the mutated entry's reference changes**.
+
+### Why flat (no `rows` wrapper)?
+
+If `byId` and `allIds` were nested under a `rows` key, a stock edit would produce a new `rows`
+object reference. Every selector that reads `state.rows` — including `selectSelectedCount` and
+`selectRowCount` which only need `allIds` — would see a new input and re-run, causing the Toolbar
+to re-render even though neither the selection count nor the row count changed.
+
+With the flat shape, `state.allIds` keeps its exact reference on a stock edit. `selectRowCount`
+returns the same integer; `selectSelectedCount` iterates `allIds` (unchanged) and the boolean
+values for each id (unchanged by `updateStock`). Both return the same number. Zustand&apos;s
+`Object.is` comparison on the returned number passes → Toolbar does not re-render.
+**Zero wasted renders is now provably true.**
 
 ---
 
@@ -115,8 +127,8 @@ copy was made. This is the key insight: **only the mutated entry's reference cha
 ```ts
 // BAD — new function reference on every render
 function Row({ id }) {
-  const row = useGridStore(state => state.rows.byId[id]);
-  //                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  const row = useGridStore(state => state.byId[id]);
+  //                       ^^^^^^^^^^^^^^^^^^^^^^^
   //           New arrow function object every render!
   //           Zustand re-subscribes on every render.
   //           On any store update, ALL Row subscribers fire.
@@ -132,7 +144,7 @@ reads has changed — it must assume it has. All subscribers are notified.
 ```ts
 // Option 1: factory function at module scope (stable by definition)
 export function makeSelectRow(id: string) {
-  return (state: GridStore) => state.rows.byId[id];
+  return (state: GridStore) => state.byId[id];  // flat top-level key, not state.rows.byId
 }
 
 // Option 2: memoize inside the component (stable as long as id is stable)

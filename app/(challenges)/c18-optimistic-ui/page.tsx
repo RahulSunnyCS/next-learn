@@ -109,13 +109,15 @@ async function ReviewsPanel({ productId }: { productId: string }) {
   // any synchronous non-deterministic call."
   await connection();
 
-  // Product info — cached for the lifetime of the dev session.
-  const product = await getCachedProduct(productId);
-
-  // Reviews — cached with a revalidatable tag.  The Server Action calls
-  // revalidateTag(tags.reviews(productId)) on success, which purges this entry
-  // and causes this component to re-fetch on the next render.
-  const reviews = await getCachedReviews(productId);
+  // Fetch product and reviews in parallel — both are independent cached reads.
+  // On a cold cache miss (e.g. after addReview calls revalidateTag) both caches
+  // are cold simultaneously.  Sequential awaits would double the streaming latency
+  // for this dynamic hole; Promise.all fetches them concurrently.
+  // getHelpfulCounts is awaited after because it genuinely needs review IDs.
+  const [product, reviews] = await Promise.all([
+    getCachedProduct(productId),
+    getCachedReviews(productId),
+  ]);
 
   // Helpful counts live in an in-process Map (see _lib/actions.ts).
   // We read them here (server-side) so the initial counts passed to the

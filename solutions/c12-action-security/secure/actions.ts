@@ -11,6 +11,7 @@
 // to see every security guard and why it is in the order it is.
 
 import { getSession } from "@/lib/auth";
+import { getReviewById } from "@/lib/data";
 import { z } from "zod";
 
 // ── Zod schema ────────────────────────────────────────────────────────────────
@@ -191,10 +192,10 @@ export async function editReview(
   //         UPDATE reviews SET ... WHERE id=? AND user_id=?
   //       which checks ownership atomically at write time.
 
-  // lib/data does not expose getReviewById(), so we read from the store directly.
-  // This is acceptable within the same monorepo.  In a real app: DB query by PK.
-  const { reviewStore } = await import("@/lib/data/store");
-  const review = reviewStore.get(validatedId);
+  // Use getReviewById() from the public lib/data interface.
+  // This avoids importing the internal store module directly, keeping the store
+  // as an implementation detail.  In a real app: DB query by primary key.
+  const review = await getReviewById(validatedId);
 
   // Generic "Forbidden" for both "not found" and "not the owner".
   if (!review || review.userId !== session.user.id) {
@@ -207,9 +208,11 @@ export async function editReview(
   //
   // We use validatedRating and validatedBody — not the raw inputs — as a final
   // reminder that only Zod-parsed values are trusted.
+  //
+  // getReviewById() returns a reference to the Map's stored object, so mutating
+  // its properties is equivalent to a Map.set() — the in-memory store is updated.
   review.rating = validatedRating;
   review.body   = validatedBody;
-  reviewStore.set(review.id, review);
 
   // In production: call revalidateTag(tags.review(review.id)) or
   // revalidatePath() here to invalidate any cached pages that show this review.

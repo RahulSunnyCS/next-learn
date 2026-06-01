@@ -95,7 +95,7 @@ underscore-prefixed folder.  Never put any file you want kept private
    npm run lint
    ```
 
-Once `_meta/challenge.config.ts` exists, the challenge automatically appears
+Once `_meta/challenge.config.json` exists, the challenge automatically appears
 in the index at `/` — no manual nav update needed.
 
 ---
@@ -172,6 +172,23 @@ app/(challenges)/[^_]*/_meta/challenge.config.json
 - Challenges are sorted by `id` (ascending) so the index order is deterministic.
 - A new challenge appears automatically once its `_meta/challenge.config.json`
   exists — no changes to `app/page.tsx` or any nav list are required.
+
+### id vs. cNN-prefix convention
+
+`id` is the **curriculum sequence number** (1–25), which is **not necessarily equal** to the
+numeric portion of the `cNN` directory prefix.  Two structural facts cause the gap:
+
+1. `lab-optimizations/` has no `cNN` prefix but occupies **id 7** in the curriculum sequence.
+   This shifts every subsequent directory prefix by one relative to its `id`:
+   `c07-data-fetching` has `id 8`, `c08-use-cache` has `id 9`, and so on.
+
+2. There is intentionally **no `c22` directory** — the sequence skips from `c21-testing` to
+   `c23-oauth-authjs`.
+
+**Rule:** always use `id` for curriculum ordering logic (registry sort, spec references, etc.).
+Never assume `cNN` prefix number equals `id`.  When cross-referencing challenges in docs, use
+the `slug` field (e.g. `c07-data-fetching`) for human-readable references and `id` for
+machine-readable ordering.
 
 ---
 

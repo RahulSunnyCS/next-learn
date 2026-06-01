@@ -68,7 +68,8 @@ export type FilterKey = "all" | "low-stock" | "no-stock" | "selected";
  *   const row = useGridStore(selectRow);
  */
 export function makeSelectRow(id: string) {
-  return (state: GridStore): SellerRow | undefined => state.rows.byId[id];
+  // Reads from flat top-level byId (not nested state.rows.byId).
+  return (state: GridStore): SellerRow | undefined => state.byId[id];
 }
 
 /**
@@ -78,29 +79,50 @@ export function makeSelectRow(id: string) {
  */
 export function makeSelectRowSelected(id: string) {
   return (state: GridStore): boolean =>
-    state.rows.byId[id]?.selected ?? false;
+    state.byId[id]?.selected ?? false;
 }
 
 // ---------------------------------------------------------------------------
 // Aggregate selectors (used by the toolbar — not by individual rows)
 // ---------------------------------------------------------------------------
 
-/** Number of selected rows. */
+/**
+ * Number of selected rows.
+ *
+ * WHY THIS DOES NOT RE-RENDER ON STOCK EDITS:
+ *   This selector reads state.allIds (a stable reference on stock edits) and
+ *   state.byId[id]?.selected (only `selected` changes on toggleSelected, not
+ *   on updateStock).  When updateStock fires, Zustand sees a new state.byId
+ *   reference but this selector returns the SAME numeric count — Zustand's
+ *   equality check (Object.is on the return value) sees no change → skip re-render.
+ *   Combined with the flat store shape (state.allIds never changes on a stock
+ *   edit), the Toolbar does NOT re-render when stock is edited.
+ */
 export function selectSelectedCount(state: GridStore): number {
-  return state.rows.allIds.filter((id) => state.rows.byId[id]?.selected).length;
+  return state.allIds.filter((id) => state.byId[id]?.selected).length;
 }
 
-/** Total revenue across all rows (for the summary bar). */
+/**
+ * Total revenue across all rows (for the summary bar).
+ * This selector correctly re-computes on stock/revenue edits because it reads byId.
+ */
 export function selectTotalRevenue(state: GridStore): number {
-  return state.rows.allIds.reduce(
-    (sum, id) => sum + (state.rows.byId[id]?.revenueCents ?? 0),
+  return state.allIds.reduce(
+    (sum, id) => sum + (state.byId[id]?.revenueCents ?? 0),
     0
   );
 }
 
-/** Total number of rows (before any filter). */
+/**
+ * Total number of rows (before any filter).
+ *
+ * WHY THIS DOES NOT RE-RENDER ON STOCK EDITS:
+ *   Reads only state.allIds.length.  allIds never changes during a stock edit
+ *   (updateStock only mutates byId).  The returned number is the same integer
+ *   → Zustand's Object.is check passes → Toolbar does not re-render.
+ */
 export function selectRowCount(state: GridStore): number {
-  return state.rows.allIds.length;
+  return state.allIds.length;
 }
 
 // ---------------------------------------------------------------------------
@@ -186,8 +208,8 @@ export function useDerivedIds(
     return sorted;
   }, [byId, allIds, sortKey, filterKey, searchQuery]);
   // NOTE: byId is the whole map object.  Zustand's normalized update
-  // (`byId = { ...state.byId, [id]: newRow }`) creates a new object
-  // reference, so this memo correctly invalidates when any row changes.
+  // (`byId = { ...state.byId, [id]: newRow }`) creates a new object reference,
+  // so this memo correctly invalidates when any row changes.
   // This is acceptable because the derive step is fast (array ops, no DOM).
   // The per-row subscriptions (makeSelectRow) are what prevent row-level
   // re-renders — these aggregate recalculations only affect the parent grid.

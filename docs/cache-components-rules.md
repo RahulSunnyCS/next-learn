@@ -44,6 +44,10 @@ app-wide. Every challenge page MUST follow these rules or `next build` fails.
    (e.g. inside a Server Action after a mutation). In v16, prefer the tag helpers
    from `@/lib/data` (`tags.*`). Note v16 changed `revalidateTag`'s signature — check
    the installed types; pass a `cacheLife` profile as the 2nd arg if required.
+   **Version note:** the two-argument `revalidateTag(tag, profile)` form reflects
+   the TypeScript types installed in this repo (Next 16.2.6, verified in
+   `node_modules/next/dist/`). Confirm against the official Next.js docs for your
+   exact installed version before using this signature in production.
 
 5. **Async request APIs are await-only in v16:** `const c = await cookies()`,
    `const h = await headers()`, `const sp = await searchParams`, `const p = await params`.

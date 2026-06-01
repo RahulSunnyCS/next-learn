@@ -32,6 +32,13 @@ import {
 import type { NormalizedRows } from "../_lib/normalize";
 import { Row } from "./Row";
 
+// Note on store shape: the store was flattened to top-level `byId` and `allIds`
+// keys (instead of nested `rows: { byId, allIds }`) so that a stock edit only
+// creates a new `byId` reference — `allIds` stays stable.  The aggregate
+// selectors selectSelectedCount and selectRowCount read `allIds` (unchanged on
+// a stock edit), so Toolbar does NOT re-render when stock is edited.  This is
+// the headline fix for the "zero wasted renders" teaching claim.
+
 // ---------------------------------------------------------------------------
 // Props — the DataGrid receives pre-normalized data from the server component
 // ---------------------------------------------------------------------------
@@ -211,15 +218,16 @@ export function DataGrid({ initialRows }: DataGridProps) {
 
   useEffect(() => {
     if (!isLoaded) {
-      loadRows(initialRows);
+      // Pass byId and allIds separately — the store shape is flat (not nested).
+      loadRows(initialRows.byId, initialRows.allIds);
     }
     // Only run once — initialRows is a stable prop from server (not reactive).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Read the raw normalized data for selector input.
-  const byId = useGridStore((s) => s.rows.byId);
-  const allIds = useGridStore((s) => s.rows.allIds);
+  // Read the raw normalized data for selector input (flat top-level keys).
+  const byId = useGridStore((s) => s.byId);
+  const allIds = useGridStore((s) => s.allIds);
   const sortKey = useGridStore((s) => s.sortKey);
   const filterKey = useGridStore((s) => s.filterKey);
   const searchQuery = useGridStore((s) => s.searchQuery);

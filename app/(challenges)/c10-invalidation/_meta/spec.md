@@ -50,6 +50,9 @@ You will learn:
   documents that v16 requires `revalidateTag(tag, profile)` with a `cacheLife`
   profile as the second argument, and shows the one-argument legacy form
   `revalidateTag(tag)` as the footgun to avoid.
+  **Version note:** the two-argument form reflects the TypeScript types installed
+  in this repo (Next 16.2.6). Confirm against the official Next.js docs for your
+  exact installed version before using this signature in production.
 
 - [ ] **AC-3 — dynamic-rendering probes**: `_lib/dynamic-probes.ts` exports
   four async probe components / helper functions — one for each trigger:

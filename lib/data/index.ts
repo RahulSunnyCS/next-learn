@@ -37,6 +37,7 @@ export {
   getProductBySlug,
   getProductById,
   listProductsBySeller,
+  getReviewById,
   listReviews,
   addReview,
   getUserById,

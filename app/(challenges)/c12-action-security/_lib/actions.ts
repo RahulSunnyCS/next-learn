@@ -18,6 +18,7 @@
 // function.
 
 import { getSession } from "@/lib/auth";
+import { getReviewById } from "@/lib/data";
 import { editReviewSchema } from "./schema";
 
 // ── In-memory rate limiter (concept demo) ─────────────────────────────────────
@@ -132,19 +133,19 @@ export async function editReview(
 
   // ── LAYER 4: Authorization (IDOR prevention) ────────────────────────────────
   //
-  // Fetch the review from the store and verify ownership BEFORE writing.
+  // Fetch the review and verify ownership BEFORE writing.
   // The ownership check uses session.user.id (server-verified) not any
   // caller-supplied userId (which would be bypassable).
   //
-  // The frozen lib/data interface does not expose getReviewById(), so we
-  // import the store directly.  This is acceptable within this monorepo.
+  // We use getReviewById() from the public lib/data interface rather than
+  // importing the store directly.  This keeps the store as an implementation
+  // detail and avoids coupling this action to internal module paths.
   // In a real app: const review = await db.reviews.findUnique({ where: { id: validatedId } })
   //
   // Note: we do NOT leak whether the review exists at all in the error message.
   // Both "not found" and "wrong owner" return "Forbidden" to prevent attackers
   // from using the action as an oracle to enumerate valid review IDs.
-  const { reviewStore } = await import("@/lib/data/store");
-  const review = reviewStore.get(validatedId);
+  const review = await getReviewById(validatedId);
 
   if (!review || review.userId !== session.user.id) {
     // Return generic "Forbidden" for both "not found" and "wrong owner".
@@ -159,9 +160,11 @@ export async function editReview(
   //   UPDATE reviews SET rating=$1, body=$2 WHERE id=$3 AND user_id=$4
   // The WHERE user_id=$4 clause is the database-layer ownership guard —
   // it prevents a TOCTOU race between the authz check and the write.
+  //
+  // Because getReviewById returns a reference to the in-memory object, we can
+  // mutate it directly (the store and the returned object share the same reference).
   review.rating = validatedRating;
   review.body = validatedBody;
-  reviewStore.set(review.id, review);
 
   // NOTE: In a production app we would call revalidateTag() or revalidatePath()
   // here to invalidate the cached product page so the new review rating appears.
