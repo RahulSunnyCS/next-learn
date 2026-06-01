@@ -46,10 +46,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Each challenge is a learner-facing content page. They change rarely
   // (only when the curriculum is updated), so changeFrequency is "monthly".
   const challengeRoutes: MetadataRoute.Sitemap = challenges.map((ch) => ({
-    // routePath is e.g. "/(challenges)/c01-auth".
-    // The (challenges) route group is transparent to the URL — the actual
-    // URL is just /c01-auth.
-    url: `${SITE_URL}${ch.routePath.replace("/(challenges)", "")}`,
+    // ch.href is the route-group-stripped public URL, e.g. "/c01-auth"
+    // (the (challenges) group is transparent to the URL). Single source of
+    // truth lives in the registry — see DiscoveredChallenge.href.
+    url: `${SITE_URL}${ch.href}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
     priority: 0.8,

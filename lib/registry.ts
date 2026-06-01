@@ -64,6 +64,15 @@ export interface ChallengeConfig {
 export interface DiscoveredChallenge {
   /** The route path relative to the App Router root, e.g. "/(challenges)/c02-catalog". */
   routePath: string;
+  /**
+   * The public URL the route is actually served at, e.g. "/c02-catalog".
+   *
+   * The (challenges) route group is transparent to the URL — Next.js strips
+   * any parenthesised segment from the path. This `href` is the route-group-
+   * stripped form and is the ONLY value that should be used in a Link/anchor
+   * or sitemap entry. Linking to `routePath` directly produces a 404.
+   */
+  href: string;
   config: ChallengeConfig;
 }
 
@@ -131,6 +140,9 @@ export function discoverChallenges(repoRoot?: string): DiscoveredChallenge[] {
 
     challenges.push({
       routePath: `/(challenges)/${slugSegment}`,
+      // Public URL: the (challenges) route group is transparent, so the slug
+      // segment alone is what Next.js actually serves.
+      href: `/${slugSegment}`,
       config,
     });
   }
